@@ -7,14 +7,14 @@
   <style>
     :root { --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; }
-    .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 650px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
-    h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; }
-    input, select, textarea { width: 100%; padding: 12px; margin: 8px 0 16px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
+    .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
+    h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; margin-bottom: 20px; }
+    label { font-weight: 600; font-size: 14px; display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 16px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
     button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     button:hover { background-color: #357abd; }
     button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-    .toggle-link { text-align: center; color: var(--primary); cursor: pointer; margin-top: 15px; font-size: 14px; font-weight: 600; }
     .story-container { background-color: #f8fafc; border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.6; font-size: 16px; max-height: 220px; overflow-y: auto; }
     .question-block { text-align: left; background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
     .radio-option { display: block; margin: 8px 0; cursor: pointer; }
@@ -31,34 +31,41 @@
     
     <div id="action-error" class="error-text hidden"></div>
 
-    <div id="view-login">
-      <h2>Student Sign In</h2>
-      <label>Registered Email</label>
-      <input type="email" id="login-email" placeholder="student@studyzone.ca">
-      <label>Password</label>
-      <input type="password" id="login-pass" placeholder="••••••••">
-      <button id="login-btn" onclick="authAction('login')">Log In</button>
-      <div class="toggle-link" onclick="switchView('signup')">New student? Register a portal account here</div>
-    </div>
+    <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
+      
+      <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
+        <h2>Student Sign In</h2>
+        <label>Registered Email</label>
+        <input type="email" id="login-email" placeholder="student@studyzone.ca">
+        
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+        
+        <button id="login-btn" onclick="authAction('login')">Log In</button>
+      </div>
 
-    <div id="view-signup" class="hidden">
-      <h2>Student Registration</h2>
-      <label>Full Name</label>
-      <input type="text" id="signup-name" placeholder="Liam Miller">
-      <label>Email Address</label>
-      <input type="email" id="signup-email" placeholder="parent@email.com">
-      <label>Create Access Password</label>
-      <input type="password" id="signup-pass" placeholder="••••••••">
-      <label>Current Grade Target Level</label>
-      <select id="signup-grade">
-        <option value="Grade 1">Grade 1</option>
-        <option value="Grade 2">Grade 2</option>
-        <option value="Grade 3">Grade 3</option>
-        <option value="Grade 4">Grade 4</option>
-        <option value="Grade 5">Grade 5</option>
-      </select>
-      <button id="signup-btn" onclick="authAction('signup')">Create Account & Enter</button>
-      <div class="toggle-link" onclick="switchView('login')">Already registered? Log in here</div>
+      <div id="panel-signup" style="flex: 1; min-width: 280px;">
+        <h2>Student Registration</h2>
+        <label>Full Name</label>
+        <input type="text" id="signup-name" placeholder="Liam Miller">
+        
+        <label>Email Address</label>
+        <input type="email" id="signup-email" placeholder="parent@email.com">
+        
+        <label>Create Access Password</label>
+        <input type="password" id="signup-pass" placeholder="••••••••">
+        
+        <label>Current Grade Target Level</label>
+        <select id="signup-grade">
+          <option value="Grade 1">Grade 1</option>
+          <option value="Grade 2">Grade 2</option>
+          <option value="Grade 3">Grade 3</option>
+          <option value="Grade 4">Grade 4</option>
+          <option value="Grade 5">Grade 5</option>
+        </select>
+        
+        <button id="signup-btn" style="background-color: var(--success);" onclick="authAction('signup')">Create Account & Enter</button>
+      </div>
     </div>
 
     <div id="view-portal" class="hidden">
@@ -84,32 +91,24 @@
   </div>
 
   <script>
-    // Paste your Google sheet deployed script URL here between the quotes
+    // Your exact Google Sheet web app execution API endpoint URL
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
 
-    // Security Rules
+    // Copy / Paste Security Controls
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault(); alert("Security Lock: Keyboard entry rules activated.");
+        e.preventDefault(); 
+        alert("Security System Triggered: Please write text answers directly using your keyboard inputs.");
       }
     });
+    
+    // Tab Focusing Blur System Security Tracking
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
     window.addEventListener('focus', () => document.getElementById('main-card').classList.remove('blur-overlay'));
-
-    function switchView(target) {
-      document.getElementById('action-error').classList.add('hidden');
-      if(target === 'signup') {
-        document.getElementById('view-login').classList.add('hidden');
-        document.getElementById('view-signup').classList.remove('hidden');
-      } else {
-        document.getElementById('view-signup').classList.add('hidden');
-        document.getElementById('view-login').classList.remove('hidden');
-      }
-    }
 
     function authAction(mode) {
       let payload = { action: mode };
@@ -132,8 +131,7 @@
       .then(res => res.json()).then(res => {
         if(res.success) {
           activeUser = res;
-          document.getElementById('view-login').classList.add('hidden');
-          document.getElementById('view-signup').classList.add('hidden');
+          document.getElementById('view-gateway').classList.add('hidden');
           document.getElementById('view-portal').classList.remove('hidden');
           document.getElementById('display-name').innerText = res.name;
           document.getElementById('display-grade').innerText = res.grade;
@@ -152,7 +150,6 @@
           document.getElementById('ui-story-title').innerText = activeTask.title;
           document.getElementById('ui-story-body').innerText = activeTask.content;
           
-          // Parse string block back into HTML structures
           let container = document.getElementById('ui-questions-container');
           container.innerHTML = "";
           computedQuestions = activeTask.questionsRaw.split("||");
