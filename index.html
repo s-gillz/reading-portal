@@ -3,93 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ontario Study Zone Reading Companion</title>
+  <title>Ontario Study Zone Learning Hub</title>
   <style>
     :root { --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; }
-    .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
+    .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 650px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
     h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; }
-    input[type="email"], input[type="password"], textarea { width: 100%; padding: 14px; margin: 10px 0 20px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; transition: border-color 0.2s; }
-    input:focus, textarea:focus { border-color: var(--primary); }
-    button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+    input, select, textarea { width: 100%; padding: 12px; margin: 8px 0 16px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     button:hover { background-color: #357abd; }
     button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-    .story-container { background-color: #f8fafc; border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.6; font-size: 17px; max-height: 250px; overflow-y: auto; }
+    .toggle-link { text-align: center; color: var(--primary); cursor: pointer; margin-top: 15px; font-size: 14px; font-weight: 600; }
+    .story-container { background-color: #f8fafc; border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.6; font-size: 16px; max-height: 220px; overflow-y: auto; }
+    .question-block { text-align: left; background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .radio-option { display: block; margin: 8px 0; cursor: pointer; }
+    .radio-option input { width: auto; margin-right: 10px; }
     .hidden { display: none !important; }
     .blur-overlay { filter: blur(15px); pointer-events: none; }
     .error-text { color: #e74c3c; font-weight: 500; text-align: center; margin-bottom: 15px; }
-    .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; font-weight: 600; text-align: left; }
-    .status-pass { background-color: #e8f8f5; color: #117a65; border: 1px solid #a3e4d7; }
-    .status-review { background-color: #fef9e7; color: #b59d1a; border: 1px solid #f9e79f; }
+    .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: #e8f8f5; border: 1px solid #a3e4d7; font-size: 15px; line-height: 1.5; }
   </style>
 </head>
 <body oncontextmenu="return false;">
 
   <div id="main-card" class="app-card">
+    
+    <div id="action-error" class="error-text hidden"></div>
+
     <div id="view-login">
-      <h2>Student Learning Portal</h2>
-      <div id="login-error" class="error-text hidden"></div>
-      <label style="font-weight:600;">Student Email</label>
-      <input type="email" id="student-email" placeholder="student@studyzone.ca">
-      <label style="font-weight:600;">Access Password</label>
-      <input type="password" id="student-pass" placeholder="••••••••">
-      <button id="login-btn" onclick="executeAuthentication()">Enter Hub</button>
+      <h2>Student Sign In</h2>
+      <label>Registered Email</label>
+      <input type="email" id="login-email" placeholder="student@studyzone.ca">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••">
+      <button id="login-btn" onclick="authAction('login')">Log In</button>
+      <div class="toggle-link" onclick="switchView('signup')">New student? Register a portal account here</div>
+    </div>
+
+    <div id="view-signup" class="hidden">
+      <h2>Student Registration</h2>
+      <label>Full Name</label>
+      <input type="text" id="signup-name" placeholder="Liam Miller">
+      <label>Email Address</label>
+      <input type="email" id="signup-email" placeholder="parent@email.com">
+      <label>Create Access Password</label>
+      <input type="password" id="signup-pass" placeholder="••••••••">
+      <label>Current Grade Target Level</label>
+      <select id="signup-grade">
+        <option value="Grade 1">Grade 1</option>
+        <option value="Grade 2">Grade 2</option>
+        <option value="Grade 3">Grade 3</option>
+        <option value="Grade 4">Grade 4</option>
+        <option value="Grade 5">Grade 5</option>
+      </select>
+      <button id="signup-btn" onclick="authAction('signup')">Create Account & Enter</button>
+      <div class="toggle-link" onclick="switchView('login')">Already registered? Log in here</div>
     </div>
 
     <div id="view-portal" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
-        <span id="display-name" style="font-weight:bold; font-size:18px;">Student</span>
-        <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 10px; border-radius:20px; font-size:14px; font-weight:600;">Grade</span>
+        <span id="display-name" style="font-weight:bold; font-size:17px;">Student Profile</span>
+        <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
       </div>
       
       <div id="task-present">
-        <h3 id="ui-story-title" style="text-align:left; margin-bottom:10px;">Reading Assignment</h3>
-        <div class="story-container" id="ui-story-body">Loading passage details...</div>
-        <p id="ui-question" style="font-weight:bold; text-align:left; font-size:16px; margin-bottom:8px;"></p>
-        <textarea id="ui-response" rows="4" placeholder="Type your answers carefully..."></textarea>
-        <button id="submit-btn" onclick="executeSubmission()">Submit Answer</button>
+        <h3 id="ui-story-title" style="text-align:left; margin-bottom:10px;">Reading Unit</h3>
+        <div class="story-container" id="ui-story-body">Loading...</div>
+        
+        <div id="ui-questions-container"></div>
+        
+        <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
         <div id="ui-feedback" class="feedback-box hidden"></div>
       </div>
 
       <div id="task-empty" class="hidden">
-        <p style="font-size:18px; font-weight:500; color:#64748b; text-align:center;">🎉 Fantastic work! You are all caught up on your assigned reading exercises.</p>
+        <p style="font-size:18px; font-weight:500; color:#64748b; text-align:center;">🎉 Fantastic work! You have completed all active reading tasks.</p>
       </div>
     </div>
   </div>
 
   <script>
-    // CRITICAL CONNECTIVITY LINK SETUP
-    // Put your exact Google Web App Link between the quotes below:
+    // Paste your Google sheet deployed script URL here between the quotes
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
     let activeUser = null;
     let activeTask = null;
+    let computedQuestions = [];
 
     // Security Rules
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault();
-        alert("Copy/Paste actions are disabled to support typing skill growth!");
+        e.preventDefault(); alert("Security Lock: Keyboard entry rules activated.");
       }
     });
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
     window.addEventListener('focus', () => document.getElementById('main-card').classList.remove('blur-overlay'));
 
-    function executeAuthentication() {
-      let email = document.getElementById('student-email').value;
-      let pass = document.getElementById('student-pass').value;
-      let errDiv = document.getElementById('login-error');
-      let btn = document.getElementById('login-btn');
-      
-      if(!email || !pass) { errDiv.innerText = "Please complete all fields."; errDiv.classList.remove('hidden'); return; }
-      btn.disabled = true; btn.innerText = "Connecting...";
+    function switchView(target) {
+      document.getElementById('action-error').classList.add('hidden');
+      if(target === 'signup') {
+        document.getElementById('view-login').classList.add('hidden');
+        document.getElementById('view-signup').classList.remove('hidden');
+      } else {
+        document.getElementById('view-signup').classList.add('hidden');
+        document.getElementById('view-login').classList.remove('hidden');
+      }
+    }
 
-      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "login", email: email, password: pass }) })
+    function authAction(mode) {
+      let payload = { action: mode };
+      let errDiv = document.getElementById('action-error');
+      errDiv.classList.add('hidden');
+
+      if(mode === 'login') {
+        payload.email = document.getElementById('login-email').value;
+        payload.password = document.getElementById('login-pass').value;
+        if(!payload.email || !payload.password) return alert("Complete login entries.");
+      } else {
+        payload.name = document.getElementById('signup-name').value;
+        payload.email = document.getElementById('signup-email').value;
+        payload.password = document.getElementById('signup-pass').value;
+        payload.grade = document.getElementById('signup-grade').value;
+        if(!payload.name || !payload.email || !payload.password) return alert("Complete signup profile fields.");
+      }
+
+      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify(payload) })
       .then(res => res.json()).then(res => {
-        btn.disabled = false; btn.innerText = "Enter Hub";
         if(res.success) {
           activeUser = res;
           document.getElementById('view-login').classList.add('hidden');
+          document.getElementById('view-signup').classList.add('hidden');
           document.getElementById('view-portal').classList.remove('hidden');
           document.getElementById('display-name').innerText = res.name;
           document.getElementById('display-grade').innerText = res.grade;
@@ -97,7 +141,7 @@
         } else {
           errDiv.innerText = res.message; errDiv.classList.remove('hidden');
         }
-      }).catch(() => { btn.disabled = false; btn.innerText = "Enter Hub"; alert("Network error. Confirm Web App deployment settings."); });
+      });
     }
 
     function fetchCurriculumPayload() {
@@ -107,7 +151,34 @@
           activeTask = tasks[0];
           document.getElementById('ui-story-title').innerText = activeTask.title;
           document.getElementById('ui-story-body').innerText = activeTask.content;
-          document.getElementById('ui-question').innerText = activeTask.question;
+          
+          // Parse string block back into HTML structures
+          let container = document.getElementById('ui-questions-container');
+          container.innerHTML = "";
+          computedQuestions = activeTask.questionsRaw.split("||");
+          
+          computedQuestions.forEach((qStr, idx) => {
+            let qClean = qStr.trim();
+            let block = document.createElement('div');
+            block.className = "question-block";
+            
+            if(qClean.includes("[MCQ]")) {
+              let parsedTitle = qClean.split("(")[0].replace("[MCQ]", "").trim();
+              let options = qClean.split("(")[1].replace(")", "").split(",");
+              
+              block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
+              options.forEach(opt => {
+                let optClean = opt.trim();
+                block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${optClean}"> ${optClean}</label>`;
+              });
+            } else {
+              let parsedTitle = qClean.replace("[OPEN]", "").trim();
+              block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
+                                 <textarea id="ans-${idx}" rows="2" placeholder="Type answer sentence context here..."></textarea>`;
+            }
+            container.appendChild(block);
+          });
+
           document.getElementById('task-present').classList.remove('hidden');
           document.getElementById('task-empty').classList.add('hidden');
         } else {
@@ -117,26 +188,36 @@
       });
     }
 
-    function executeSubmission() {
-      let ans = document.getElementById('ui-response').value.trim();
+    function processAssignmentSubmission() {
+      let answers = [];
       let btn = document.getElementById('submit-btn');
-      let fbBox = document.getElementById('ui-feedback');
       
-      if(!ans) return alert("Please type your response before submitting.");
-      btn.disabled = true; btn.innerText = "Evaluating response content...";
+      for(let i=0; i<computedQuestions.length; i++) {
+        let qStr = computedQuestions[i].trim();
+        if(qStr.includes("[MCQ]")) {
+          let selected = document.querySelector(`input[name="q-${i}"]:checked`);
+          if(!selected) return alert(`Please select an option answer for Question ${i+1}`);
+          answers.push(selected.value);
+        } else {
+          let textAns = document.getElementById(`ans-${i}`).value.trim();
+          if(!textAns) return alert(`Please write a structured entry response for Question ${i+1}`);
+          answers.push(textAns);
+        }
+      }
 
-      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentInput: ans }) })
-      .then(res => res.json()).then(evalResult => {
+      btn.disabled = true; btn.innerText = "Processing automated grading evaluation scores...";
+      
+      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentAnswers: answers }) })
+      .then(res => res.json()).then(result => {
+        let fbBox = document.getElementById('ui-feedback');
+        fbBox.innerHTML = `<p style="font-size:17px; margin:0 0 10px 0;">📊 <strong>Performance Unit Score: ${result.percentage} (${result.score}/${result.total})</strong></p>${result.feedback}`;
         fbBox.classList.remove('hidden');
-        fbBox.className = "feedback-box " + (evalResult.score === 1 ? "status-pass" : "status-review");
-        fbBox.innerText = evalResult.feedback;
         
         setTimeout(() => {
-          document.getElementById('ui-response').value = "";
           fbBox.classList.add('hidden');
-          btn.disabled = false; btn.innerText = "Submit Answer";
+          btn.disabled = false; btn.innerText = "Submit Assessment Answers";
           fetchCurriculumPayload();
-        }, 6000);
+        }, 10000);
       });
     }
   </script>
