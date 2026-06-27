@@ -27,7 +27,6 @@
     .retry-btn { background-color: var(--warning); margin-top: 12px; }
     .retry-btn:hover { background-color: #d68910; }
     
-    /* Progress Dashboard Styling */
     .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
     .stat-card { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; }
     .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
@@ -41,7 +40,6 @@
   <div id="main-card" class="app-card">
     <div id="action-error" class="error-text hidden"></div>
 
-    <!-- VIEW A: GATEWAY PANEL -->
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
       <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h2>Student Sign In</h2>
@@ -72,14 +70,12 @@
       </div>
     </div>
 
-    <!-- VIEW B: ACTIVE LEARNING HUB PORTAL -->
     <div id="view-portal" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
         <span id="display-name" style="font-weight:bold; font-size:17px;">Student Profile</span>
         <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
       </div>
       
-      <!-- TOP HUB Section: Active Tasks -->
       <div id="task-present">
         <h3>🎯 Active Assignment</h3>
         <h4 id="ui-story-title" style="text-align:left; margin: 10px 0;">Reading Unit</h4>
@@ -90,7 +86,6 @@
           <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
         </div>
 
-        <!-- Dynamic Evaluation Result Panel Box -->
         <div id="ui-feedback" class="feedback-box hidden">
           <div id="feedback-text-content"></div>
           <button id="retry-btn" class="retry-btn hidden" onclick="resetFormForRetry()">Try This Task Again 🔄</button>
@@ -101,7 +96,6 @@
         <p style="font-size:16px; font-weight:500; color:#64748b; text-align:center; padding: 20px 0;">🎉 Fantastic work! You have completed all active reading tasks for your grade level.</p>
       </div>
 
-      <!-- BOTTOM HUB Section: Progress Report Card Tracker -->
       <div id="progress-dashboard" style="margin-top: 40px;">
         <h3>📊 Your Progress & Grades</h3>
         <div class="dashboard-grid">
@@ -127,28 +121,25 @@
             </thead>
             <tbody id="history-rows">
               <tr>
-                <td colspan="4" style="text-align:center; color:#94a3b8;">No entries found. Complete your first task above!</td>
+                <td colspan="4" style="text-align:center; color:#94a3b8;">No entries found.</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // Verify this links explicitly to your Google Sheet macro endpoint URL
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
 
-    // Security Rules
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault(); alert("Security Lock: Clipboard typing rule active.");
+        e.preventDefault(); alert("Security Rule Active.");
       }
     });
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
@@ -162,7 +153,7 @@
       if(mode === 'login') {
         payload.email = document.getElementById('login-email').value;
         payload.password = document.getElementById('login-pass').value;
-        if(!payload.email || !payload.password) return alert("Complete all entries.");
+        if(!payload.email || !payload.password) return alert("Complete fields.");
       } else {
         payload.name = document.getElementById('signup-name').value;
         payload.email = document.getElementById('signup-email').value;
@@ -194,9 +185,7 @@
           activeTask = tasks[0];
           document.getElementById('ui-story-title').innerText = activeTask.title;
           document.getElementById('ui-story-body').innerText = activeTask.content;
-          
           buildQuestionsUI();
-
           document.getElementById('task-present').classList.remove('hidden');
           document.getElementById('task-empty').classList.add('hidden');
           document.getElementById('questions-wrapper-box').classList.remove('hidden');
@@ -221,7 +210,6 @@
         if(qClean.includes("[MCQ]")) {
           let parsedTitle = qClean.split("(")[0].replace("[MCQ]", "").trim();
           let options = qClean.split("(")[1].replace(")", "").split(",");
-          
           block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
           options.forEach(opt => {
             let optClean = opt.trim();
@@ -230,7 +218,7 @@
         } else {
           let parsedTitle = qClean.replace("[OPEN]", "").trim();
           block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
-                             <textarea id="ans-${idx}" rows="2" placeholder="Type structural textual breakdown analysis here..."></textarea>`;
+                             <textarea id="ans-${idx}" rows="2" placeholder="Type response here..."></textarea>`;
         }
         container.appendChild(block);
       });
@@ -269,12 +257,12 @@
           answers.push(selected.value);
         } else {
           let textAns = document.getElementById(`ans-${i}`).value.trim();
-          if(!textAns) return alert(`Please complete written input for Question ${i+1}`);
+          if(!textAns) return alert(`Please answer Question ${i+1}`);
           answers.push(textAns);
         }
       }
 
-      btn.disabled = true; btn.innerText = "Analyzing target criteria parameters...";
+      btn.disabled = true; btn.innerText = "Evaluating response criteria...";
       
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentAnswers: answers }) })
       .then(res => res.json()).then(result => {
@@ -282,43 +270,31 @@
         let fbText = document.getElementById('feedback-text-content');
         let retryBtn = document.getElementById('retry-btn');
         
-        // Hide the inputs so they can focus on feedback
         document.getElementById('questions-wrapper-box').classList.add('hidden');
-        
         let numericScore = parseInt(result.percentage);
         
         if (numericScore >= 70) {
-          fbBox.style.backgroundColor = "#e8f8f5";
-          fbBox.style.borderColor = "#a3e4d7";
+          fbBox.style.backgroundColor = "#e8f8f5"; fbBox.style.borderColor = "#a3e4d7";
           fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#117a65;"><strong>🎉 Success! Score: ${result.percentage}</strong></p>${result.feedback}`;
           retryBtn.classList.add('hidden');
-          
-          // Clear and fetch next text profile after a short delay
           setTimeout(() => {
             btn.disabled = false; btn.innerText = "Submit Assessment Answers";
-            fetchCurriculumPayload();
-            fetchStudentProgressReport();
+            fetchCurriculumPayload(); fetchStudentProgressReport();
           }, 4000);
-          
         } else {
-          fbBox.style.backgroundColor = "#fef9e7";
-          fbBox.style.borderColor = "#f9e79f";
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Keep Practicing! Score: ${result.percentage}</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Don't worry! Review the passage content above and try again to lift your grade score badge.</p>`;
+          fbBox.style.backgroundColor = "#fef9e7"; fbBox.style.borderColor = "#f9e79f";
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Keep Practicing! Score: ${result.percentage}</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Review the passage details above and try again to improve your score badge.</p>`;
           retryBtn.classList.remove('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
-          fetchStudentProgressReport(); // Refresh history background table instantly
+          fetchStudentProgressReport();
         }
-        
         fbBox.classList.remove('hidden');
       });
     }
 
     function resetFormForRetry() {
-      // Hide feedback box and bring back the layout elements safely
       document.getElementById('ui-feedback').classList.add('hidden');
       document.getElementById('questions-wrapper-box').classList.remove('hidden');
-      
-      // Re-render empty input questions block instantly
       buildQuestionsUI();
     }
   </script>
