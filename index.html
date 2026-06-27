@@ -9,6 +9,7 @@
     body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; }
     .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
     h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; margin-bottom: 20px; }
+    h3 { margin: 20px 0 10px 0; font-size: 18px; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left;}
     label { font-weight: 600; font-size: 14px; display: block; margin-top: 10px; }
     input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 16px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
@@ -23,24 +24,28 @@
     .blur-overlay { filter: blur(15px); pointer-events: none; }
     .error-text { color: #e74c3c; font-weight: 500; text-align: center; margin-bottom: 15px; }
     .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: #e8f8f5; border: 1px solid #a3e4d7; font-size: 15px; line-height: 1.5; }
+    
+    /* Progress Dashboard Styling Components */
+    .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
+    .stat-card { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; }
+    .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
+    .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; }
+    .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    .history-table th { background-color: #f8fafc; font-weight: 600; }
   </style>
 </head>
 <body oncontextmenu="return false;">
 
   <div id="main-card" class="app-card">
-    
     <div id="action-error" class="error-text hidden"></div>
 
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
-      
       <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h2>Student Sign In</h2>
         <label>Registered Email</label>
         <input type="email" id="login-email" placeholder="student@studyzone.ca">
-        
         <label>Password</label>
         <input type="password" id="login-pass" placeholder="••••••••">
-        
         <button id="login-btn" onclick="authAction('login')">Log In</button>
       </div>
 
@@ -48,13 +53,10 @@
         <h2>Student Registration</h2>
         <label>Full Name</label>
         <input type="text" id="signup-name" placeholder="Liam Miller">
-        
         <label>Email Address</label>
         <input type="email" id="signup-email" placeholder="parent@email.com">
-        
         <label>Create Access Password</label>
         <input type="password" id="signup-pass" placeholder="••••••••">
-        
         <label>Current Grade Target Level</label>
         <select id="signup-grade">
           <option value="Grade 1">Grade 1</option>
@@ -63,7 +65,6 @@
           <option value="Grade 4">Grade 4</option>
           <option value="Grade 5">Grade 5</option>
         </select>
-        
         <button id="signup-btn" style="background-color: var(--success);" onclick="authAction('signup')">Create Account & Enter</button>
       </div>
     </div>
@@ -75,38 +76,67 @@
       </div>
       
       <div id="task-present">
-        <h3 id="ui-story-title" style="text-align:left; margin-bottom:10px;">Reading Unit</h3>
+        <h3>🎯 Active Assignment</h3>
+        <h4 id="ui-story-title" style="text-align:left; margin: 10px 0;">Reading Unit</h4>
         <div class="story-container" id="ui-story-body">Loading...</div>
-        
         <div id="ui-questions-container"></div>
-        
         <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
         <div id="ui-feedback" class="feedback-box hidden"></div>
       </div>
 
       <div id="task-empty" class="hidden">
-        <p style="font-size:18px; font-weight:500; color:#64748b; text-align:center;">🎉 Fantastic work! You have completed all active reading tasks.</p>
+        <p style="font-size:16px; font-weight:500; color:#64748b; text-align:center; padding: 20px 0;">🎉 Fantastic work! You have completed all active reading tasks for your grade level.</p>
       </div>
+
+      <div id="progress-dashboard" style="margin-top: 40px;">
+        <h3>📊 Your Progress & Grades</h3>
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Completed Badges</div>
+            <div class="stat-number" id="stat-completed">0</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Overall Progress Status</div>
+            <div class="stat-number" style="color: var(--success);" id="stat-badge">Learning</div>
+          </div>
+        </div>
+
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Story Assignment</th>
+                <th>Status</th>
+                <th>Teacher / AI Feedback Summary</th>
+              </tr>
+            </thead>
+            <tbody id="history-rows">
+              <tr>
+                <td colspan="4" style="text-align:center; color:#94a3b8;">No entries found. Complete your first task above!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
-    // Your exact Google Sheet web app execution API endpoint URL
+    // Paste your Google sheet deployed script URL here between the quotes
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
 
-    // Copy / Paste Security Controls
+    // Security Controls
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault(); 
-        alert("Security System Triggered: Please write text answers directly using your keyboard inputs.");
+        e.preventDefault(); alert("Security Lock: Manual typing enabled.");
       }
     });
-    
-    // Tab Focusing Blur System Security Tracking
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
     window.addEventListener('focus', () => document.getElementById('main-card').classList.remove('blur-overlay'));
 
@@ -124,7 +154,7 @@
         payload.email = document.getElementById('signup-email').value;
         payload.password = document.getElementById('signup-pass').value;
         payload.grade = document.getElementById('signup-grade').value;
-        if(!payload.name || !payload.email || !payload.password) return alert("Complete signup profile fields.");
+        if(!payload.name || !payload.email || !payload.password) return alert("Complete fields.");
       }
 
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify(payload) })
@@ -136,6 +166,7 @@
           document.getElementById('display-name').innerText = res.name;
           document.getElementById('display-grade').innerText = res.grade;
           fetchCurriculumPayload();
+          fetchStudentProgressReport(); // Load the report card right on entry
         } else {
           errDiv.innerText = res.message; errDiv.classList.remove('hidden');
         }
@@ -171,7 +202,7 @@
             } else {
               let parsedTitle = qClean.replace("[OPEN]", "").trim();
               block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
-                                 <textarea id="ans-${idx}" rows="2" placeholder="Type answer sentence context here..."></textarea>`;
+                                 <textarea id="ans-${idx}" rows="2" placeholder="Type response here..."></textarea>`;
             }
             container.appendChild(block);
           });
@@ -185,6 +216,27 @@
       });
     }
 
+    function fetchStudentProgressReport() {
+      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getProgress", email: activeUser.email }) })
+      .then(res => res.json()).then(data => {
+        document.getElementById('stat-completed').innerText = data.totalCompleted;
+        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Escarpment Pro 🌟" : "Active Learner";
+        
+        let tbody = document.getElementById('history-rows');
+        if(data.history && data.history.length > 0) {
+          tbody.innerHTML = "";
+          data.history.forEach(item => {
+            tbody.innerHTML += `<tr>
+              <td><strong>${item.date}</strong></td>
+              <td>${item.title}</td>
+              <td><span style="color:${item.score.includes('✅')?'#2ecc71':'#f39c12'}; font-weight:bold;">${item.score}</span></td>
+              <td><i style="color:#475569;">"${item.feedback}"</i></td>
+            </tr>`;
+          });
+        }
+      });
+    }
+
     function processAssignmentSubmission() {
       let answers = [];
       let btn = document.getElementById('submit-btn');
@@ -193,27 +245,28 @@
         let qStr = computedQuestions[i].trim();
         if(qStr.includes("[MCQ]")) {
           let selected = document.querySelector(`input[name="q-${i}"]:checked`);
-          if(!selected) return alert(`Please select an option answer for Question ${i+1}`);
+          if(!selected) return alert(`Please answer Question ${i+1}`);
           answers.push(selected.value);
         } else {
           let textAns = document.getElementById(`ans-${i}`).value.trim();
-          if(!textAns) return alert(`Please write a structured entry response for Question ${i+1}`);
+          if(!textAns) return alert(`Please complete text context entry for Question ${i+1}`);
           answers.push(textAns);
         }
       }
 
-      btn.disabled = true; btn.innerText = "Processing automated grading evaluation scores...";
+      btn.disabled = true; btn.innerText = "Evaluating response content parameters...";
       
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentAnswers: answers }) })
       .then(res => res.json()).then(result => {
         let fbBox = document.getElementById('ui-feedback');
-        fbBox.innerHTML = `<p style="font-size:17px; margin:0 0 10px 0;">📊 <strong>Performance Unit Score: ${result.percentage} (${result.score}/${result.total})</strong></p>${result.feedback}`;
+        fbBox.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0;"><strong>Score: ${result.percentage}</strong></p>${result.feedback}`;
         fbBox.classList.remove('hidden');
         
         setTimeout(() => {
           fbBox.classList.add('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
           fetchCurriculumPayload();
+          fetchStudentProgressReport(); // Instantly refresh the historical grade box
         }, 10000);
       });
     }
