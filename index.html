@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ontario Study Zone Learning Hub</title>
   <style>
-    :root { --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; }
+    :root { --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; --warning: #f39c12; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; }
     .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
     h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; margin-bottom: 20px; }
@@ -24,8 +24,10 @@
     .blur-overlay { filter: blur(15px); pointer-events: none; }
     .error-text { color: #e74c3c; font-weight: 500; text-align: center; margin-bottom: 15px; }
     .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: #e8f8f5; border: 1px solid #a3e4d7; font-size: 15px; line-height: 1.5; }
+    .retry-btn { background-color: var(--warning); margin-top: 12px; }
+    .retry-btn:hover { background-color: #d68910; }
     
-    /* Progress Dashboard Styling Components */
+    /* Progress Dashboard Styling */
     .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
     .stat-card { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; }
     .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
@@ -39,6 +41,7 @@
   <div id="main-card" class="app-card">
     <div id="action-error" class="error-text hidden"></div>
 
+    <!-- VIEW A: GATEWAY PANEL -->
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
       <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h2>Student Sign In</h2>
@@ -69,25 +72,36 @@
       </div>
     </div>
 
+    <!-- VIEW B: ACTIVE LEARNING HUB PORTAL -->
     <div id="view-portal" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
         <span id="display-name" style="font-weight:bold; font-size:17px;">Student Profile</span>
         <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
       </div>
       
+      <!-- TOP HUB Section: Active Tasks -->
       <div id="task-present">
         <h3>🎯 Active Assignment</h3>
         <h4 id="ui-story-title" style="text-align:left; margin: 10px 0;">Reading Unit</h4>
         <div class="story-container" id="ui-story-body">Loading...</div>
-        <div id="ui-questions-container"></div>
-        <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
-        <div id="ui-feedback" class="feedback-box hidden"></div>
+        
+        <div id="questions-wrapper-box">
+          <div id="ui-questions-container"></div>
+          <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
+        </div>
+
+        <!-- Dynamic Evaluation Result Panel Box -->
+        <div id="ui-feedback" class="feedback-box hidden">
+          <div id="feedback-text-content"></div>
+          <button id="retry-btn" class="retry-btn hidden" onclick="resetFormForRetry()">Try This Task Again 🔄</button>
+        </div>
       </div>
 
       <div id="task-empty" class="hidden">
         <p style="font-size:16px; font-weight:500; color:#64748b; text-align:center; padding: 20px 0;">🎉 Fantastic work! You have completed all active reading tasks for your grade level.</p>
       </div>
 
+      <!-- BOTTOM HUB Section: Progress Report Card Tracker -->
       <div id="progress-dashboard" style="margin-top: 40px;">
         <h3>📊 Your Progress & Grades</h3>
         <div class="dashboard-grid">
@@ -124,17 +138,17 @@
   </div>
 
   <script>
-    // Paste your Google sheet deployed script URL here between the quotes
+    // Verify this links explicitly to your Google Sheet macro endpoint URL
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
 
-    // Security Controls
+    // Security Rules
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault(); alert("Security Lock: Manual typing enabled.");
+        e.preventDefault(); alert("Security Lock: Clipboard typing rule active.");
       }
     });
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
@@ -148,7 +162,7 @@
       if(mode === 'login') {
         payload.email = document.getElementById('login-email').value;
         payload.password = document.getElementById('login-pass').value;
-        if(!payload.email || !payload.password) return alert("Complete login entries.");
+        if(!payload.email || !payload.password) return alert("Complete all entries.");
       } else {
         payload.name = document.getElementById('signup-name').value;
         payload.email = document.getElementById('signup-email').value;
@@ -166,7 +180,7 @@
           document.getElementById('display-name').innerText = res.name;
           document.getElementById('display-grade').innerText = res.grade;
           fetchCurriculumPayload();
-          fetchStudentProgressReport(); // Load the report card right on entry
+          fetchStudentProgressReport();
         } else {
           errDiv.innerText = res.message; errDiv.classList.remove('hidden');
         }
@@ -181,34 +195,12 @@
           document.getElementById('ui-story-title').innerText = activeTask.title;
           document.getElementById('ui-story-body').innerText = activeTask.content;
           
-          let container = document.getElementById('ui-questions-container');
-          container.innerHTML = "";
-          computedQuestions = activeTask.questionsRaw.split("||");
-          
-          computedQuestions.forEach((qStr, idx) => {
-            let qClean = qStr.trim();
-            let block = document.createElement('div');
-            block.className = "question-block";
-            
-            if(qClean.includes("[MCQ]")) {
-              let parsedTitle = qClean.split("(")[0].replace("[MCQ]", "").trim();
-              let options = qClean.split("(")[1].replace(")", "").split(",");
-              
-              block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
-              options.forEach(opt => {
-                let optClean = opt.trim();
-                block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${optClean}"> ${optClean}</label>`;
-              });
-            } else {
-              let parsedTitle = qClean.replace("[OPEN]", "").trim();
-              block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
-                                 <textarea id="ans-${idx}" rows="2" placeholder="Type response here..."></textarea>`;
-            }
-            container.appendChild(block);
-          });
+          buildQuestionsUI();
 
           document.getElementById('task-present').classList.remove('hidden');
           document.getElementById('task-empty').classList.add('hidden');
+          document.getElementById('questions-wrapper-box').classList.remove('hidden');
+          document.getElementById('ui-feedback').classList.add('hidden');
         } else {
           document.getElementById('task-present').classList.add('hidden');
           document.getElementById('task-empty').classList.remove('hidden');
@@ -216,11 +208,39 @@
       });
     }
 
+    function buildQuestionsUI() {
+      let container = document.getElementById('ui-questions-container');
+      container.innerHTML = "";
+      computedQuestions = activeTask.questionsRaw.split("||");
+      
+      computedQuestions.forEach((qStr, idx) => {
+        let qClean = qStr.trim();
+        let block = document.createElement('div');
+        block.className = "question-block";
+        
+        if(qClean.includes("[MCQ]")) {
+          let parsedTitle = qClean.split("(")[0].replace("[MCQ]", "").trim();
+          let options = qClean.split("(")[1].replace(")", "").split(",");
+          
+          block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
+          options.forEach(opt => {
+            let optClean = opt.trim();
+            block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${optClean}"> ${optClean}</label>`;
+          });
+        } else {
+          let parsedTitle = qClean.replace("[OPEN]", "").trim();
+          block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
+                             <textarea id="ans-${idx}" rows="2" placeholder="Type structural textual breakdown analysis here..."></textarea>`;
+        }
+        container.appendChild(block);
+      });
+    }
+
     function fetchStudentProgressReport() {
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getProgress", email: activeUser.email }) })
       .then(res => res.json()).then(data => {
         document.getElementById('stat-completed').innerText = data.totalCompleted;
-        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Escarpment Pro 🌟" : "Active Learner";
+        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Elite Scholar 🌟" : "Active Learner";
         
         let tbody = document.getElementById('history-rows');
         if(data.history && data.history.length > 0) {
@@ -249,26 +269,57 @@
           answers.push(selected.value);
         } else {
           let textAns = document.getElementById(`ans-${i}`).value.trim();
-          if(!textAns) return alert(`Please complete text context entry for Question ${i+1}`);
+          if(!textAns) return alert(`Please complete written input for Question ${i+1}`);
           answers.push(textAns);
         }
       }
 
-      btn.disabled = true; btn.innerText = "Evaluating response content parameters...";
+      btn.disabled = true; btn.innerText = "Analyzing target criteria parameters...";
       
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentAnswers: answers }) })
       .then(res => res.json()).then(result => {
         let fbBox = document.getElementById('ui-feedback');
-        fbBox.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0;"><strong>Score: ${result.percentage}</strong></p>${result.feedback}`;
-        fbBox.classList.remove('hidden');
+        let fbText = document.getElementById('feedback-text-content');
+        let retryBtn = document.getElementById('retry-btn');
         
-        setTimeout(() => {
-          fbBox.classList.add('hidden');
+        // Hide the inputs so they can focus on feedback
+        document.getElementById('questions-wrapper-box').classList.add('hidden');
+        
+        let numericScore = parseInt(result.percentage);
+        
+        if (numericScore >= 70) {
+          fbBox.style.backgroundColor = "#e8f8f5";
+          fbBox.style.borderColor = "#a3e4d7";
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#117a65;"><strong>🎉 Success! Score: ${result.percentage}</strong></p>${result.feedback}`;
+          retryBtn.classList.add('hidden');
+          
+          // Clear and fetch next text profile after a short delay
+          setTimeout(() => {
+            btn.disabled = false; btn.innerText = "Submit Assessment Answers";
+            fetchCurriculumPayload();
+            fetchStudentProgressReport();
+          }, 4000);
+          
+        } else {
+          fbBox.style.backgroundColor = "#fef9e7";
+          fbBox.style.borderColor = "#f9e79f";
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Keep Practicing! Score: ${result.percentage}</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Don't worry! Review the passage content above and try again to lift your grade score badge.</p>`;
+          retryBtn.classList.remove('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
-          fetchCurriculumPayload();
-          fetchStudentProgressReport(); // Instantly refresh the historical grade box
-        }, 10000);
+          fetchStudentProgressReport(); // Refresh history background table instantly
+        }
+        
+        fbBox.classList.remove('hidden');
       });
+    }
+
+    function resetFormForRetry() {
+      // Hide feedback box and bring back the layout elements safely
+      document.getElementById('ui-feedback').classList.add('hidden');
+      document.getElementById('questions-wrapper-box').classList.remove('hidden');
+      
+      // Re-render empty input questions block instantly
+      buildQuestionsUI();
     }
   </script>
 </body>
