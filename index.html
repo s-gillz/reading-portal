@@ -10,7 +10,6 @@
       --card-bg: white; --text-color: #2c3e50; --border-color: #e2e8f0; --accent-bg: #f8fafc;
     }
     
-    /* FEATURE 5: HIGH CONTRAST DARK STYLING ENGINE */
     body.dark-mode {
       --primary: #60a5fa; --success: #4ade80; --dark: #f8fafc; --bg: #0f172a; --warning: #fbbf24;
       --card-bg: #1e293b; --text-color: #f1f5f9; --border-color: #334155; --accent-bg: #334155;
@@ -19,7 +18,7 @@
     body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; transition: background 0.3s ease, color 0.3s ease; }
     .app-card { background: var(--card-bg); border-radius: 16px; padding: 40px; width: 100%; max-width: 950px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease, background 0.3s ease; }
     h2 { margin-top: 0; color: var(--text-color); font-size: 24px; text-align: center; margin-bottom: 20px; }
-    h3 { margin: 20px 0 10px 0; font-size: 18px; color: var(--text-color); border-bottom: 2px solid var(--border-color); padding-bottom: 5px; text-align: left;}
+    h3 { margin: 25px 0 10px 0; font-size: 18px; color: var(--text-color); border-bottom: 2px solid var(--border-color); padding-bottom: 5px; text-align: left;}
     label { font-weight: 600; font-size: 14px; display: block; margin-top: 10px; }
     input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 16px 0; border: 2px solid var(--border-color); background: var(--card-bg); color: var(--text-color); border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
@@ -27,13 +26,10 @@
     button:hover { background-color: #357abd; }
     button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
     
-    /* ACCESSIBILITY TEXT PANEL WITH ADJUSTABLE SCALE ROOT */
     .story-container { background-color: var(--accent-bg); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.7; font-size: 16px; max-height: 250px; overflow-y: auto; position: relative; }
-    
-    /* FEATURE 2: CLICKABLE SIGHT WORDS STYLE BLOCK */
     .sight-word { text-decoration: underline dashed var(--primary); cursor: help; font-weight: 600; color: var(--primary); display: inline-block; position: relative; }
     
-    .question-block { text-align: left; background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    .question-block { text-align: left; background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; position: relative; }
     .radio-option { display: block; margin: 8px 0; cursor: pointer; }
     .radio-option input { width: auto; margin-right: 10px; }
     .hidden { display: none !important; }
@@ -42,20 +38,52 @@
     .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: rgba(46, 204, 113, 0.15); border: 1px solid var(--success); font-size: 15px; line-height: 1.5; }
     .retry-btn { background-color: var(--warning); margin-top: 12px; }
     
-    /* SYSTEM UTILITY BAR CONFIGS */
     .accessibility-suite { display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 15px; }
     .tool-btn { width: auto; padding: 6px 12px; font-size: 13px; background: var(--accent-bg); color: var(--text-color); border: 1px solid var(--border-color); margin: 0; border-radius: 6px; }
     .audio-control-btn { background-color: #8e44ad; color: white; width: auto; font-size: 14px; padding: 8px 16px; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 6px; }
     .audio-control-btn:hover { background-color: #6c3483; }
     .highlight-bank { margin-bottom: 15px; padding: 10px; background: #fffde7; border: 1px dashed #f1c40f; border-radius: 6px; text-align: left; font-size: 13px; color: #7f8c8d; }
     
-    .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
-    .stat-card { flex: 1; background: var(--accent-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; text-align: center; }
+    .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 180px; background: var(--accent-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; text-align: center; }
     .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
     .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; color: var(--text-color); }
     .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
     .history-table th { background-color: var(--accent-bg); font-weight: 600; }
     .logout-btn { background-color: #e74c3c; padding: 6px 12px; font-size: 13px; font-weight: 600; width: auto; margin-top: 0; border-radius: 6px; }
+
+    /* FEATURE 2a: SIGHT WORD FLASHCARDS STYLING */
+    .flashcard-arena { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+    .flashcard-box { width: 160px; height: 100px; perspective: 1000px; cursor: pointer; }
+    .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+    .flashcard-box.flipped .flashcard-inner { transform: rotateY(180deg); }
+    .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px dashed var(--primary); padding: 10px; box-sizing: border-box; font-size: 14px; font-weight: 600; }
+    .flashcard-front { background: var(--accent-bg); color: var(--primary); }
+    .flashcard-back { background: var(--primary); color: white; transform: rotateY(180deg); font-size: 11px; font-weight: normal; line-height: 1.3; overflow-y: auto; }
+
+    /* FEATURE 2b: DICTATION MIC BUTTON */
+    .mic-btn { position: absolute; right: 15px; top: 40px; background: #e74c3c; color: white; border: none; padding: 6px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; width: auto; margin: 0; }
+    .mic-btn.listening { background: #2ecc71; animation: pulse 1.5s infinite; }
+
+    /* FEATURE 2c: VISUAL BADGE ARCHITECTURE */
+    .badge-display-row { display: flex; gap: 15px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+    .insignia-badge { width: 75px; text-align: center; filter: grayscale(100%); opacity: 0.3; transition: all 0.4s ease; font-size: 11px; font-weight: 600; }
+    .insignia-badge.unlocked { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+    .insignia-icon { font-size: 32px; display: block; margin-bottom: 4px; }
+
+    /* FEATURE 3b: NATIVE PROGRESS CHART PATH */
+    .chart-panel-track { background: var(--accent-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; margin-top: 15px; }
+    .bar-chart-row { display: flex; align-items: center; margin: 8px 0; font-size: 13px; }
+    .bar-label { width: 100px; font-weight: 600; text-align: left; }
+    .bar-wrapper { flex: 1; background: var(--border-color); height: 16px; border-radius: 8px; overflow: hidden; margin-left: 10px; }
+    .bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 1s ease; }
+
+    /* FEATURE 1b: REVIEW BENCH ELEMENT LIST */
+    .review-bench-card { background: #fff3cd; border: 1px solid #ffeeba; border-radius: 8px; padding: 15px; margin-top: 20px; text-align: left; }
+    .review-item-link { display: inline-block; background: white; border: 1px solid #ffeeba; padding: 6px 12px; margin: 5px; border-radius: 4px; font-size: 13px; font-weight: 600; color: #856404; cursor: pointer; text-decoration: none; }
+    .review-item-link:hover { background: var(--warning); color: white; }
+
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -121,6 +149,11 @@
 
         <div class="story-container" id="ui-story-body" onmouseup="captureSelectedTextEvidence()">Loading...</div>
         
+        <div id="flashcards-wrapper" class="hidden">
+          <h5 style="margin: 10px 0; font-size: 14px; color: var(--primary);">📖 Interactive Sight Word Bench (Click to Flip)</h5>
+          <div id="ui-flashcard-arena" class="flashcard-arena"></div>
+        </div>
+
         <div id="questions-wrapper-box">
           <div id="ui-questions-container"></div>
           <button id="submit-btn" onclick="processAssignmentSubmission()">Submit Assessment Answers</button>
@@ -136,6 +169,12 @@
         <p style="font-size:16px; font-weight:500; color:#64748b; text-align:center; padding: 20px 0;">🎉 Fantastic work! You have completed all active reading tasks for your grade level.</p>
       </div>
 
+      <div id="ui-review-bench" class="review-bench-card hidden">
+        <strong style="color: #856404; font-size: 14px; display: block; margin-bottom: 5px;">🔄 Focus Review Bench:</strong>
+        <span style="font-size: 13px; color: #856404; display: block; margin-bottom: 8px;">You have uncompleted criteria on these topics. Click any unit card to reload and polish your mastery tier!</span>
+        <div id="review-bench-links"></div>
+      </div>
+
       <div id="progress-dashboard" style="margin-top: 40px;">
         <h3>📊 Your Progress & Grades</h3>
         <div class="dashboard-grid">
@@ -147,13 +186,26 @@
             <div style="font-size: 14px; color: #64748b; font-weight: 600;">Daily Learning Streak</div>
             <div class="stat-number" style="color: #e67e22;" id="stat-streak">1 Day 🔥</div>
           </div>
-          <div class="stat-card">
-            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Status Rank</div>
-            <div class="stat-number" style="color: var(--success);" id="stat-badge">Learning</div>
+          
+          <div class="stat-card" style="min-width: 260px;">
+            <div style="font-size: 14px; color: #64748b; font-weight: 600; margin-bottom: 5px;">Earned Achievements</div>
+            <div class="badge-display-row">
+              <div id="badge-bronze" class="insignia-badge"><span class="insignia-icon">🥉</span>Starter</div>
+              <div id="badge-silver" class="insignia-badge"><span class="insignia-icon">🥈</span>Achiever</div>
+              <div id="badge-gold" class="insignia-badge"><span class="insignia-icon">👑</span>Elite</div>
+            </div>
           </div>
         </div>
 
-        <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;">
+        <div class="chart-panel-track">
+          <strong style="font-size: 14px; display: block; margin-bottom: 10px; text-align: left;">🧠 Focus Skill Analytics (Concept Weakness Tracker)</strong>
+          <div class="bar-chart-row"><div class="bar-label">Vocabulary</div><div class="bar-wrapper"><div id="chart-vocab" class="bar-fill" style="background:#3498db;"></div></div></div>
+          <div class="bar-chart-row"><div class="bar-label">Inference</div><div class="bar-wrapper"><div id="chart-infer" class="bar-fill" style="background:#9b59b6;"></div></div></div>
+          <div class="bar-chart-row"><div class="bar-label">Literal Text</div><div class="bar-wrapper"><div id="chart-literal" class="bar-fill" style="background:#2ecc71;"></div></div></div>
+          <div class="bar-chart-row"><div class="bar-label">Critical Thought</div><div class="bar-wrapper"><div id="chart-critical" class="bar-fill" style="background:#e67e22;"></div></div></div>
+        </div>
+
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 20px;">
           <table class="history-table">
             <thead>
               <tr>
@@ -183,8 +235,8 @@
     let currentFontSize = 16;
     let textSynthesisEngine = window.speechSynthesis;
     let activeUtteranceInstance = null;
+    let allGradeTasksCached = []; // Optimization to handle Review Bench reloading instantly
 
-    // ONTARIO SIGHT WORD VOCABULARY DICTIONARY (FEATURE 2)
     const STUDY_ZONE_DICTIONARY = {
       "niagara": "A famous geographic region in Ontario known for its massive waterfalls and unique ecological ecosystems.",
       "carolinian": "A specialized southern Ontario forest zone containing diverse, rare plants and wildlife trees.",
@@ -254,14 +306,13 @@
     }
 
     function logoutUser() {
-      if(textSynthesisEngine) textSynthesisEngine.cancel();
+      if(textSynthesisEngine.speaking) textSynthesisEngine.cancel();
       localStorage.removeItem("studyZoneUser");
       activeUser = null;
       document.getElementById('view-portal').classList.add('hidden');
       document.getElementById('view-gateway').classList.remove('hidden');
     }
 
-    // FEATURE 5: DYNAMIC TEXT SCALING LOGIC
     function adjustTextScale(direction) {
       currentFontSize += (direction * 2);
       if(currentFontSize < 12) currentFontSize = 12;
@@ -269,12 +320,10 @@
       document.getElementById('ui-story-body').style.fontSize = currentFontSize + "px";
     }
 
-    // FEATURE 5: HIGH CONTRAST TOGGLER
     function toggleHighContrastTheme() {
       document.body.classList.toggle('dark-mode');
     }
 
-    // FEATURE 1: NATIVE TEXT TO SPEECH AUDIO ENGINE
     function speakStoryTextContent() {
       if(textSynthesisEngine.speaking) {
         textSynthesisEngine.cancel();
@@ -284,7 +333,7 @@
       
       let rawText = document.getElementById('ui-story-body').innerText;
       activeUtteranceInstance = new SpeechSynthesisUtterance(rawText);
-      activeUtteranceInstance.rate = 0.9; // Natural pace for young learners
+      activeUtteranceInstance.rate = 0.9;
       
       activeUtteranceInstance.onend = () => {
         document.getElementById('audio-speak-btn').innerText = "Listen to Story 🔊";
@@ -294,7 +343,6 @@
       textSynthesisEngine.speak(activeUtteranceInstance);
     }
 
-    // FEATURE 3: CAPTURE HIGHLIGHTED EVIDENCE FOR STUDENT NOTE TAKING
     function captureSelectedTextEvidence() {
       let textSelection = window.getSelection().toString().trim();
       if(textSelection.length > 5 && textSelection.length < 150) {
@@ -303,21 +351,87 @@
       }
     }
 
-    // FEATURE 2: INJECTION ENGINE FOR GLOSSARY DICTIONARY POPUPS
     function renderStoryWithSightWordPopups(text) {
       let words = text.split(/\s+/);
+      let extractedWords = [];
+      
       let outputHtml = words.map(word => {
         let cleanWord = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
         if(STUDY_ZONE_DICTIONARY[cleanWord]) {
+          if(!extractedWords.includes(cleanWord)) extractedWords.push(cleanWord);
           return `<span class="sight-word" onclick="alert('📖 [${cleanWord.toUpperCase()}] Definition: ${STUDY_ZONE_DICTIONARY[cleanWord]}')">${word}</span>`;
         }
         return word;
       }).join(" ");
       
       document.getElementById('ui-story-body').innerHTML = outputHtml;
+      
+      // FEATURE 2a: BUILD THE FLASHCARD MINI-GAME ELEMENTS DYNAMICALLY
+      buildFlashcardDeck(extractedWords);
     }
 
-    // FEATURE 6: DAILY ACTIVITY STREAK CALCULATIONS
+    // FEATURE 2a: FLASHCARD DOM BUILDER
+    function buildFlashcardDeck(wordArray) {
+      let arena = document.getElementById('ui-flashcard-arena');
+      let wrapper = document.getElementById('flashcards-wrapper');
+      arena.innerHTML = "";
+      
+      if(wordArray.length === 0) {
+        wrapper.classList.add('hidden');
+        return;
+      }
+      
+      wrapper.classList.remove('hidden');
+      wordArray.forEach(word => {
+        let card = document.createElement('div');
+        card.className = "flashcard-box";
+        card.onclick = () => card.classList.toggle('flipped');
+        
+        card.innerHTML = `
+          <div class="flashcard-inner">
+            <div class="flashcard-front">✨ ${word.toUpperCase()}</div>
+            <div class="flashcard-back">${STUDY_ZONE_DICTIONARY[word]}</div>
+          </div>
+        `;
+        arena.appendChild(card);
+      });
+    }
+
+    // FEATURE 2b: NATIVE WEB SPEECH SPEECH-TO-TEXT DICTATION ENGINE
+    function activateVoiceDictation(targetInputId) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return alert("Voice input isn't supported on this specific browser browser engine. Try Chrome/Safari!");
+      
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-CA'; // Target local Canadian English pronunciations
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      
+      let micBtn = document.getElementById(`mic-btn-${targetInputId}`);
+      micBtn.classList.add('listening');
+      micBtn.innerText = "Listening...🎙️";
+      
+      recognition.start();
+      
+      recognition.onresult = (event) => {
+        let speechToTextString = event.results[0][0].transcript;
+        let textarea = document.getElementById(targetInputId);
+        textarea.value = textarea.value ? textarea.value + " " + speechToTextString : speechToTextString;
+      };
+      
+      recognition.onspeechend = () => {
+        recognition.stop();
+        micBtn.classList.remove('listening');
+        micBtn.innerText = "Speak Answer 🎙️";
+      };
+      
+      recognition.onerror = () => {
+        recognition.stop();
+        micBtn.classList.remove('listening');
+        micBtn.innerText = "Speak Answer 🎙️";
+      };
+    }
+
     function logDailyStreakActivity() {
       let today = new Date().toDateString();
       let lastDate = localStorage.getItem("studyZoneLastActiveDate");
@@ -346,23 +460,27 @@
     function fetchCurriculumPayload() {
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getTasks", email: activeUser.email, grade: activeUser.grade }) })
       .then(res => res.json()).then(tasks => {
+        allGradeTasksCached = tasks || []; // Store globally to map back to review panel actions
         if(tasks && tasks.length > 0) {
-          activeTask = tasks[0];
-          document.getElementById('ui-story-title').innerText = activeTask.title;
-          
-          // Render with clickable dictionary bindings
-          renderStoryWithSightWordPopups(activeTask.content);
-          
-          buildQuestionsUI();
-          document.getElementById('task-present').classList.remove('hidden');
-          document.getElementById('task-empty').classList.add('hidden');
-          document.getElementById('questions-wrapper-box').classList.remove('hidden');
-          document.getElementById('ui-feedback').classList.add('hidden');
+          loadSelectedAssignmentData(tasks[0]);
         } else {
           document.getElementById('task-present').classList.add('hidden');
           document.getElementById('task-empty').classList.remove('hidden');
         }
       });
+    }
+
+    function loadSelectedAssignmentData(taskObject) {
+      activeTask = taskObject;
+      document.getElementById('ui-story-title').innerText = activeTask.title;
+      renderStoryWithSightWordPopups(activeTask.content);
+      buildQuestionsUI();
+      
+      document.getElementById('task-present').classList.remove('hidden');
+      document.getElementById('task-empty').classList.add('hidden');
+      document.getElementById('questions-wrapper-box').classList.remove('hidden');
+      document.getElementById('ui-feedback').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function buildQuestionsUI() {
@@ -385,8 +503,12 @@
           });
         } else {
           let parsedTitle = qClean.replace("[OPEN]", "").trim();
-          block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>
-                             <textarea id="ans-${idx}" rows="2" placeholder="Type response here..."></textarea>`;
+          // FEATURE 2b: Inject Dictation activation anchor points alongside text structures
+          block.innerHTML = `
+            <p style="font-weight:600; margin:0 0 10px 0; padding-right: 120px;">Question ${idx+1}: ${parsedTitle}</p>
+            <button id="mic-btn-ans-${idx}" class="mic-btn" onclick="activateVoiceDictation('ans-${idx}')">Speak Answer 🎙️</button>
+            <textarea id="ans-${idx}" rows="2" placeholder="Type or use your microphone to dictate response details..."></textarea>
+          `;
         }
         container.appendChild(block);
       });
@@ -395,11 +517,48 @@
     function fetchStudentProgressReport() {
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getProgress", email: activeUser.email }) })
       .then(res => res.json()).then(data => {
-        document.getElementById('stat-completed').innerText = data.totalCompleted;
+        let completedCount = parseInt(data.totalCompleted || 0);
+        document.getElementById('stat-completed').innerText = completedCount;
         
-        // UNLOCK INSIGNIA MILESTONES
-        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Elite Scholar 👑" : "Active Scholar";
+        // FEATURE 2c: VISUAL ACHIEVEMENT BADGES SYSTEM UNLOCK
+        if (completedCount >= 1) document.getElementById('badge-bronze').classList.add('unlocked');
+        if (completedCount >= 3) document.getElementById('badge-silver').classList.add('unlocked');
+        if (completedCount >= 5) document.getElementById('badge-gold').classList.add('unlocked');
         
+        // FEATURE 1c & 3b: POPULATE DYNAMIC FOCUS SKILL STACK BAR FILL RATIOS
+        let metrics = data.skillMetrics || { vocabulary: 0, inference: 0, literal: 0, critical: 0 };
+        let maxFlaggedValue = Math.max(metrics.vocabulary, metrics.inference, metrics.literal, metrics.critical, 1);
+        
+        document.getElementById('chart-vocab').style.width = ((metrics.vocabulary / maxFlaggedValue) * 100) + "%";
+        document.getElementById('chart-infer').style.width = ((metrics.inference / maxFlaggedValue) * 100) + "%";
+        document.getElementById('chart-literal').style.width = ((metrics.literal / maxFlaggedValue) * 100) + "%";
+        document.getElementById('chart-critical').style.width = ((metrics.critical / maxFlaggedValue) * 100) + "%";
+
+        // FEATURE 1b: CONSTRUCT THE FRONTEND FOCUS REVIEW BENCH
+        let reviewContainer = document.getElementById('ui-review-bench');
+        let reviewLinksDiv = document.getElementById('review-bench-links');
+        reviewLinksDiv.innerHTML = "";
+        
+        if (data.failedTaskIds && data.failedTaskIds.length > 0) {
+          let injectedAnyLink = false;
+          data.failedTaskIds.forEach(fId => {
+            let matchedTask = allGradeTasksCached.find(t => t.id.toString().trim() === fId.toString().trim());
+            if (matchedTask) {
+              injectedAnyLink = true;
+              let linkBtn = document.createElement('button');
+              linkBtn.className = "review-item-link";
+              linkBtn.innerText = `📖 Review: ${matchedTask.title}`;
+              linkBtn.onclick = () => loadSelectedAssignmentData(matchedTask);
+              reviewLinksDiv.appendChild(linkBtn);
+            }
+          });
+          if (injectedAnyLink) reviewContainer.classList.remove('hidden');
+          else reviewContainer.classList.add('hidden');
+        } else {
+          reviewContainer.classList.add('hidden');
+        }
+        
+        // POPULATE PROGRESS RECORD VIEW DATA ROWS
         let tbody = document.getElementById('history-rows');
         if(data.history && data.history.length > 0) {
           tbody.innerHTML = "";
@@ -408,7 +567,6 @@
             if(item.score.includes('Excellent')) colorCode = "#2ecc71";
             if(item.score.includes('Good')) colorCode = "#3498db";
 
-            // UPGRADED FEEDBACK PARSER ENGINE: Cleans quotes and generates beautiful stacked text-line items
             let visualFeedbackHtml = "";
             if (item.feedback) {
               let cleanFeedback = item.feedback.toString().replace(/^"/, '').replace(/"$/, '').trim();
@@ -471,7 +629,7 @@
             fetchCurriculumPayload(); fetchStudentProgressReport();
           }, 5000);
         } else {
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#e67e22;"><strong>📝 Performance Tier: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px;">Review the text details above. Use the dictionary links or click "Listen to Story" to build your understanding and try again!</p>`;
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#e67e22;"><strong>📝 Performance Tier: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px;">Review the text details above. Use the flashcards or click "Listen to Story" to build your understanding and try again!</p>`;
           retryBtn.classList.remove('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
           fetchStudentProgressReport();
