@@ -408,11 +408,26 @@
             if(item.score.includes('Excellent')) colorCode = "#2ecc71";
             if(item.score.includes('Good')) colorCode = "#3498db";
 
+            // UPGRADED FEEDBACK PARSER ENGINE: Cleans quotes and generates beautiful stacked text-line items
+            let visualFeedbackHtml = "";
+            if (item.feedback) {
+              let cleanFeedback = item.feedback.toString().replace(/^"/, '').replace(/"$/, '').trim();
+              let alignmentLines = cleanFeedback.split('|');
+              
+              visualFeedbackHtml = alignmentLines.map(line => {
+                let trimmedLine = line.trim();
+                if (!trimmedLine) return '';
+                return `<div style="margin-bottom: 5px; padding-left: 8px; border-left: 2px solid var(--border-color); font-size: 13px; font-style: normal; line-height: 1.4;">${trimmedLine}</div>`;
+              }).join('');
+            } else {
+              visualFeedbackHtml = `<span style="color:#94a3b8; font-style:italic;">No feedback criteria tracked.</span>`;
+            }
+
             tbody.innerHTML += `<tr>
               <td><strong>${item.date}</strong></td>
               <td>${item.title}</td>
               <td><span style="color:${colorCode}; font-weight:bold;">${item.score}</span></td>
-              <td><i style="color:var(--text-color);">"${item.feedback}"</i></td>
+              <td>${visualFeedbackHtml}</td>
             </tr>`;
           });
         }
