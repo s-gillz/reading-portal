@@ -26,6 +26,8 @@
     .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: #e8f8f5; border: 1px solid #a3e4d7; font-size: 15px; line-height: 1.5; }
     .retry-btn { background-color: var(--warning); margin-top: 12px; }
     .retry-btn:hover { background-color: #d68910; }
+    .logout-btn { background-color: #e74c3c; padding: 6px 12px; font-size: 13px; font-weight: 600; width: auto; margin-top: 0; border-radius: 6px; }
+    .logout-btn:hover { background-color: #c0392b; }
     
     .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
     .stat-card { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; }
@@ -40,6 +42,7 @@
   <div id="main-card" class="app-card">
     <div id="action-error" class="error-text hidden"></div>
 
+    <!-- VIEW A: SIDE-BY-SIDE GATEWAY -->
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
       <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h2>Student Sign In</h2>
@@ -70,10 +73,14 @@
       </div>
     </div>
 
+    <!-- VIEW B: CORE APPLICATION HUB -->
     <div id="view-portal" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
-        <span id="display-name" style="font-weight:bold; font-size:17px;">Student Profile</span>
-        <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
+        <div>
+          <span id="display-name" style="font-weight:bold; font-size:17px; margin-right: 10px;">Student Profile</span>
+          <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
+        </div>
+        <button class="logout-btn" onclick="logoutUser()">Log Out 🚪</button>
       </div>
       
       <div id="task-present">
@@ -116,7 +123,7 @@
                 <th>Date</th>
                 <th>Story Assignment</th>
                 <th>Status</th>
-                <th>Teacher Feedback Summary</th>
+                <th>Teacher / AI Feedback Summary</th>
               </tr>
             </thead>
             <tbody id="history-rows">
@@ -136,6 +143,19 @@
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
+
+    // Run automatically when page displays to check for an active cached session
+    window.addEventListener("DOMContentLoaded", () => {
+      const cachedUser = localStorage.getItem("studyZoneUser");
+      if (cachedUser) {
+        try {
+          activeUser = JSON.parse(cachedUser);
+          initializePortalView();
+        } catch (e) {
+          localStorage.removeItem("studyZoneUser");
+        }
+      }
+    });
 
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
@@ -166,16 +186,31 @@
       .then(res => res.json()).then(res => {
         if(res.success) {
           activeUser = res;
-          document.getElementById('view-gateway').classList.add('hidden');
-          document.getElementById('view-portal').classList.remove('hidden');
-          document.getElementById('display-name').innerText = res.name;
-          document.getElementById('display-grade').innerText = res.grade;
-          fetchCurriculumPayload();
-          fetchStudentProgressReport();
+          // Store session data securely so page refresh doesn't break app memory
+          localStorage.setItem("studyZoneUser", JSON.stringify(res));
+          initializePortalView();
         } else {
           errDiv.innerText = res.message; errDiv.classList.remove('hidden');
         }
       });
+    }
+
+    function initializePortalView() {
+      document.getElementById('view-gateway').classList.add('hidden');
+      document.getElementById('view-portal').classList.remove('hidden');
+      document.getElementById('display-name').innerText = activeUser.name;
+      document.getElementById('display-grade').innerText = activeUser.grade;
+      fetchCurriculumPayload();
+      fetchStudentProgressReport();
+    }
+
+    function logoutUser() {
+      localStorage.removeItem("studyZoneUser");
+      activeUser = null;
+      document.getElementById('view-portal').classList.add('hidden');
+      document.getElementById('view-gateway').classList.remove('hidden');
+      document.getElementById('login-email').value = "";
+      document.getElementById('login-pass').value = "";
     }
 
     function fetchCurriculumPayload() {
