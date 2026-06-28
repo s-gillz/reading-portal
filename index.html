@@ -5,36 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ontario Study Zone Learning Hub</title>
   <style>
-    :root { --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; --warning: #f39c12; }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; }
-    .app-card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease; }
-    h2 { margin-top: 0; color: var(--dark); font-size: 24px; text-align: center; margin-bottom: 20px; }
-    h3 { margin: 20px 0 10px 0; font-size: 18px; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left;}
+    :root { 
+      --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; --warning: #f39c12; 
+      --card-bg: white; --text-color: #2c3e50; --border-color: #e2e8f0; --accent-bg: #f8fafc;
+    }
+    
+    /* FEATURE 5: HIGH CONTRAST DARK STYLING ENGINE */
+    body.dark-mode {
+      --primary: #60a5fa; --success: #4ade80; --dark: #f8fafc; --bg: #0f172a; --warning: #fbbf24;
+      --card-bg: #1e293b; --text-color: #f1f5f9; --border-color: #334155; --accent-bg: #334155;
+    }
+    
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; user-select: none; -webkit-user-select: none; transition: background 0.3s ease, color 0.3s ease; }
+    .app-card { background: var(--card-bg); border-radius: 16px; padding: 40px; width: 100%; max-width: 950px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; transition: filter 0.3s ease, background 0.3s ease; }
+    h2 { margin-top: 0; color: var(--text-color); font-size: 24px; text-align: center; margin-bottom: 20px; }
+    h3 { margin: 20px 0 10px 0; font-size: 18px; color: var(--text-color); border-bottom: 2px solid var(--border-color); padding-bottom: 5px; text-align: left;}
     label { font-weight: 600; font-size: 14px; display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 16px 0; border: 2px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
+    input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 16px 0; border: 2px solid var(--border-color); background: var(--card-bg); color: var(--text-color); border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
     button { width: 100%; background-color: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     button:hover { background-color: #357abd; }
     button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-    .story-container { background-color: #f8fafc; border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.6; font-size: 16px; max-height: 220px; overflow-y: auto; }
-    .question-block { text-align: left; background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+    
+    /* ACCESSIBILITY TEXT PANEL WITH ADJUSTABLE SCALE ROOT */
+    .story-container { background-color: var(--accent-bg); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.7; font-size: 16px; max-height: 250px; overflow-y: auto; position: relative; }
+    
+    /* FEATURE 2: CLICKABLE SIGHT WORDS STYLE BLOCK */
+    .sight-word { text-decoration: underline dashed var(--primary); cursor: help; font-weight: 600; color: var(--primary); display: inline-block; position: relative; }
+    
+    .question-block { text-align: left; background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
     .radio-option { display: block; margin: 8px 0; cursor: pointer; }
     .radio-option input { width: auto; margin-right: 10px; }
     .hidden { display: none !important; }
     .blur-overlay { filter: blur(15px); pointer-events: none; }
     .error-text { color: #e74c3c; font-weight: 500; text-align: center; margin-bottom: 15px; }
-    .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: #e8f8f5; border: 1px solid #a3e4d7; font-size: 15px; line-height: 1.5; }
+    .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: rgba(46, 204, 113, 0.15); border: 1px solid var(--success); font-size: 15px; line-height: 1.5; }
     .retry-btn { background-color: var(--warning); margin-top: 12px; }
-    .retry-btn:hover { background-color: #d68910; }
-    .logout-btn { background-color: #e74c3c; padding: 6px 12px; font-size: 13px; font-weight: 600; width: auto; margin-top: 0; border-radius: 6px; }
-    .logout-btn:hover { background-color: #c0392b; }
+    
+    /* SYSTEM UTILITY BAR CONFIGS */
+    .accessibility-suite { display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 15px; }
+    .tool-btn { width: auto; padding: 6px 12px; font-size: 13px; background: var(--accent-bg); color: var(--text-color); border: 1px solid var(--border-color); margin: 0; border-radius: 6px; }
+    .audio-control-btn { background-color: #8e44ad; color: white; width: auto; font-size: 14px; padding: 8px 16px; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 6px; }
+    .audio-control-btn:hover { background-color: #6c3483; }
+    .highlight-bank { margin-bottom: 15px; padding: 10px; background: #fffde7; border: 1px dashed #f1c40f; border-radius: 6px; text-align: left; font-size: 13px; color: #7f8c8d; }
     
     .dashboard-grid { display: flex; gap: 20px; margin-bottom: 20px; }
-    .stat-card { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; }
+    .stat-card { flex: 1; background: var(--accent-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; text-align: center; }
     .stat-number { font-size: 28px; font-weight: bold; color: var(--primary); }
-    .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; }
-    .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
-    .history-table th { background-color: #f8fafc; font-weight: 600; }
+    .history-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; color: var(--text-color); }
+    .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+    .history-table th { background-color: var(--accent-bg); font-weight: 600; }
+    .logout-btn { background-color: #e74c3c; padding: 6px 12px; font-size: 13px; font-weight: 600; width: auto; margin-top: 0; border-radius: 6px; }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -43,7 +64,7 @@
     <div id="action-error" class="error-text hidden"></div>
 
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
-      <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
+      <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid var(--border-color); padding-right: 20px;">
         <h2>Student Sign In</h2>
         <label>Registered Email</label>
         <input type="email" id="login-email" placeholder="student@studyzone.ca">
@@ -56,7 +77,7 @@
         <h2>Student Registration</h2>
         <label>Full Name</label>
         <input type="text" id="signup-name" placeholder="Liam Miller">
-        <label>Email Address</label>
+        <label>Parent Email Address</label>
         <input type="email" id="signup-email" placeholder="parent@email.com">
         <label>Create Access Password</label>
         <input type="password" id="signup-pass" placeholder="••••••••">
@@ -73,7 +94,13 @@
     </div>
 
     <div id="view-portal" class="hidden">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
+      <div class="accessibility-suite">
+        <button class="tool-btn" onclick="adjustTextScale(1)">Text Size A+ ➕</button>
+        <button class="tool-btn" onclick="adjustTextScale(-1)">Text Size A- ➖</button>
+        <button class="tool-btn" onclick="toggleHighContrastTheme()">High Contrast 🌗</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid var(--border-color); padding-bottom:10px;">
         <div>
           <span id="display-name" style="font-weight:bold; font-size:17px; margin-right: 10px;">Student Profile</span>
           <span id="display-grade" style="background:#e0f2fe; color:#0369a1; padding:4px 12px; border-radius:20px; font-size:13px; font-weight:600;">Grade Level</span>
@@ -83,8 +110,16 @@
       
       <div id="task-present">
         <h3>🎯 Active Assignment</h3>
-        <h4 id="ui-story-title" style="text-align:left; margin: 10px 0;">Reading Unit</h4>
-        <div class="story-container" id="ui-story-body">Loading...</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+          <h4 id="ui-story-title" style="margin: 0;">Reading Unit</h4>
+          <button id="audio-speak-btn" class="audio-control-btn" onclick="speakStoryTextContent()">Listen to Story 🔊</button>
+        </div>
+
+        <div id="ui-evidence-bank" class="highlight-bank">
+          <strong>📝 Text Evidence Bench:</strong> Highlight sentences in the story text box below to clip vital keyword references automatically.
+        </div>
+
+        <div class="story-container" id="ui-story-body" onmouseup="captureSelectedTextEvidence()">Loading...</div>
         
         <div id="questions-wrapper-box">
           <div id="ui-questions-container"></div>
@@ -93,7 +128,7 @@
 
         <div id="ui-feedback" class="feedback-box hidden">
           <div id="feedback-text-content"></div>
-          <button id="retry-btn" class="retry-btn hidden" onclick="resetFormForRetry()">Try This Task Again 🔄</button>
+          <button id="retry-btn" class="retry-btn" onclick="resetFormForRetry()">Try This Task Again 🔄</button>
         </div>
       </div>
 
@@ -105,16 +140,20 @@
         <h3>📊 Your Progress & Grades</h3>
         <div class="dashboard-grid">
           <div class="stat-card">
-            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Mastered Badges (Level 3/4)</div>
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Mastered Badges</div>
             <div class="stat-number" id="stat-completed">0</div>
           </div>
           <div class="stat-card">
-            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Overall Progress Status</div>
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Daily Learning Streak</div>
+            <div class="stat-number" style="color: #e67e22;" id="stat-streak">1 Day 🔥</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Status Rank</div>
             <div class="stat-number" style="color: var(--success);" id="stat-badge">Learning</div>
           </div>
         </div>
 
-        <div style="max-height: 250px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px;">
           <table class="history-table">
             <thead>
               <tr>
@@ -141,6 +180,18 @@
     let activeUser = null;
     let activeTask = null;
     let computedQuestions = [];
+    let currentFontSize = 16;
+    let textSynthesisEngine = window.speechSynthesis;
+    let activeUtteranceInstance = null;
+
+    // ONTARIO SIGHT WORD VOCABULARY DICTIONARY (FEATURE 2)
+    const STUDY_ZONE_DICTIONARY = {
+      "niagara": "A famous geographic region in Ontario known for its massive waterfalls and unique ecological ecosystems.",
+      "carolinian": "A specialized southern Ontario forest zone containing diverse, rare plants and wildlife trees.",
+      "biodiversity": "The variety of different living organisms, plants, and animal species inhabiting an ecosystem.",
+      "ecosystem": "A community of living organisms interacting together with their physical environment coordinates.",
+      "freshwater": "Clean water that does not contain salt, found in local rivers, lakes, and natural wetlands."
+    };
 
     window.addEventListener("DOMContentLoaded", () => {
       const cachedUser = localStorage.getItem("studyZoneUser");
@@ -152,11 +203,12 @@
           localStorage.removeItem("studyZoneUser");
         }
       }
+      updateStreakTrackerMetrics();
     });
 
     document.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && ['c','v','x','a'].includes(e.key.toLowerCase())) {
-        e.preventDefault(); alert("Security Rule Active.");
+        e.preventDefault(); alert("Security Lock Active.");
       }
     });
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
@@ -185,6 +237,7 @@
           activeUser = res;
           localStorage.setItem("studyZoneUser", JSON.stringify(res));
           initializePortalView();
+          logDailyStreakActivity();
         } else {
           errDiv.innerText = res.message; errDiv.classList.remove('hidden');
         }
@@ -201,12 +254,93 @@
     }
 
     function logoutUser() {
+      if(textSynthesisEngine) textSynthesisEngine.cancel();
       localStorage.removeItem("studyZoneUser");
       activeUser = null;
       document.getElementById('view-portal').classList.add('hidden');
       document.getElementById('view-gateway').classList.remove('hidden');
-      document.getElementById('login-email').value = "";
-      document.getElementById('login-pass').value = "";
+    }
+
+    // FEATURE 5: DYNAMIC TEXT SCALING LOGIC
+    function adjustTextScale(direction) {
+      currentFontSize += (direction * 2);
+      if(currentFontSize < 12) currentFontSize = 12;
+      if(currentFontSize > 26) currentFontSize = 26;
+      document.getElementById('ui-story-body').style.fontSize = currentFontSize + "px";
+    }
+
+    // FEATURE 5: HIGH CONTRAST TOGGLER
+    function toggleHighContrastTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    // FEATURE 1: NATIVE TEXT TO SPEECH AUDIO ENGINE
+    function speakStoryTextContent() {
+      if(textSynthesisEngine.speaking) {
+        textSynthesisEngine.cancel();
+        document.getElementById('audio-speak-btn').innerText = "Listen to Story 🔊";
+        return;
+      }
+      
+      let rawText = document.getElementById('ui-story-body').innerText;
+      activeUtteranceInstance = new SpeechSynthesisUtterance(rawText);
+      activeUtteranceInstance.rate = 0.9; // Natural pace for young learners
+      
+      activeUtteranceInstance.onend = () => {
+        document.getElementById('audio-speak-btn').innerText = "Listen to Story 🔊";
+      };
+      
+      document.getElementById('audio-speak-btn').innerText = "Stop Reading 🛑";
+      textSynthesisEngine.speak(activeUtteranceInstance);
+    }
+
+    // FEATURE 3: CAPTURE HIGHLIGHTED EVIDENCE FOR STUDENT NOTE TAKING
+    function captureSelectedTextEvidence() {
+      let textSelection = window.getSelection().toString().trim();
+      if(textSelection.length > 5 && textSelection.length < 150) {
+        let bank = document.getElementById('ui-evidence-bank');
+        bank.innerHTML = `<strong>📝 Clipped Evidence Note:</strong> <span style="background-color:#fff59d; color:#000; padding:2px 4px; border-radius:4px;">"${textSelection}"</span>`;
+      }
+    }
+
+    // FEATURE 2: INJECTION ENGINE FOR GLOSSARY DICTIONARY POPUPS
+    function renderStoryWithSightWordPopups(text) {
+      let words = text.split(/\s+/);
+      let outputHtml = words.map(word => {
+        let cleanWord = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        if(STUDY_ZONE_DICTIONARY[cleanWord]) {
+          return `<span class="sight-word" onclick="alert('📖 [${cleanWord.toUpperCase()}] Definition: ${STUDY_ZONE_DICTIONARY[cleanWord]}')">${word}</span>`;
+        }
+        return word;
+      }).join(" ");
+      
+      document.getElementById('ui-story-body').innerHTML = outputHtml;
+    }
+
+    // FEATURE 6: DAILY ACTIVITY STREAK CALCULATIONS
+    function logDailyStreakActivity() {
+      let today = new Date().toDateString();
+      let lastDate = localStorage.getItem("studyZoneLastActiveDate");
+      let currentStreak = parseInt(localStorage.getItem("studyZoneStreakCount") || "0");
+
+      if (!lastDate) {
+        localStorage.setItem("studyZoneStreakCount", "1");
+      } else {
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (lastDate === yesterday.toDateString()) {
+          localStorage.setItem("studyZoneStreakCount", (currentStreak + 1).toString());
+        } else if (lastDate !== today) {
+          localStorage.setItem("studyZoneStreakCount", "1");
+        }
+      }
+      localStorage.setItem("studyZoneLastActiveDate", today);
+      updateStreakTrackerMetrics();
+    }
+
+    function updateStreakTrackerMetrics() {
+      let currentStreak = localStorage.getItem("studyZoneStreakCount") || "1";
+      document.getElementById('stat-streak').innerText = `${currentStreak} Day${currentStreak === "1" ? "" : "s"} 🔥`;
     }
 
     function fetchCurriculumPayload() {
@@ -215,7 +349,10 @@
         if(tasks && tasks.length > 0) {
           activeTask = tasks[0];
           document.getElementById('ui-story-title').innerText = activeTask.title;
-          document.getElementById('ui-story-body').innerText = activeTask.content;
+          
+          // Render with clickable dictionary bindings
+          renderStoryWithSightWordPopups(activeTask.content);
+          
           buildQuestionsUI();
           document.getElementById('task-present').classList.remove('hidden');
           document.getElementById('task-empty').classList.add('hidden');
@@ -259,13 +396,15 @@
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getProgress", email: activeUser.email }) })
       .then(res => res.json()).then(data => {
         document.getElementById('stat-completed').innerText = data.totalCompleted;
-        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Elite Scholar 🌟" : "Active Learner";
+        
+        // UNLOCK INSIGNIA MILESTONES
+        document.getElementById('stat-badge').innerText = data.totalCompleted >= 5 ? "Elite Scholar 👑" : "Active Scholar";
         
         let tbody = document.getElementById('history-rows');
         if(data.history && data.history.length > 0) {
           tbody.innerHTML = "";
           data.history.forEach(item => {
-            let colorCode = "#f39c12"; // Developing
+            let colorCode = "#e67e22";
             if(item.score.includes('Excellent')) colorCode = "#2ecc71";
             if(item.score.includes('Good')) colorCode = "#3498db";
 
@@ -273,7 +412,7 @@
               <td><strong>${item.date}</strong></td>
               <td>${item.title}</td>
               <td><span style="color:${colorCode}; font-weight:bold;">${item.score}</span></td>
-              <td><i style="color:#475569;">"${item.feedback}"</i></td>
+              <td><i style="color:var(--text-color);">"${item.feedback}"</i></td>
             </tr>`;
           });
         }
@@ -281,6 +420,8 @@
     }
 
     function processAssignmentSubmission() {
+      if(textSynthesisEngine.speaking) textSynthesisEngine.cancel();
+      
       let answers = [];
       let btn = document.getElementById('submit-btn');
       
@@ -308,16 +449,14 @@
         document.getElementById('questions-wrapper-box').classList.add('hidden');
         
         if (result.status === "Excellent" || result.status === "Good") {
-          fbBox.style.backgroundColor = "#e8f8f5"; fbBox.style.borderColor = "#a3e4d7";
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#117a65;"><strong>🎉 Performance standard: ${result.status} (${result.percentage})</strong></p>${result.feedback}`;
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#2ecc71;"><strong>🎉 Achievement Standard Mastered: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:8px; font-size:13px; color:#7f8c8d;">📬 A comprehensive progress report card has been sent directly to your parent's email address.</p>`;
           retryBtn.classList.add('hidden');
           setTimeout(() => {
             btn.disabled = false; btn.innerText = "Submit Assessment Answers";
             fetchCurriculumPayload(); fetchStudentProgressReport();
-          }, 4000);
+          }, 5000);
         } else {
-          fbBox.style.backgroundColor = "#fef9e7"; fbBox.style.borderColor = "#f9e79f";
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Performance standard: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Review the passage details above and try again to improve your evaluation tier.</p>`;
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#e67e22;"><strong>📝 Performance Tier: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px;">Review the text details above. Use the dictionary links or click "Listen to Story" to build your understanding and try again!</p>`;
           retryBtn.classList.remove('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
           fetchStudentProgressReport();
