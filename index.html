@@ -42,7 +42,6 @@
   <div id="main-card" class="app-card">
     <div id="action-error" class="error-text hidden"></div>
 
-    <!-- VIEW A: SIDE-BY-SIDE GATEWAY -->
     <div id="view-gateway" style="display: flex; gap: 40px; flex-wrap: wrap;">
       <div id="panel-login" style="flex: 1; min-width: 280px; border-right: 1px solid #e2e8f0; padding-right: 20px;">
         <h2>Student Sign In</h2>
@@ -73,7 +72,6 @@
       </div>
     </div>
 
-    <!-- VIEW B: CORE APPLICATION HUB -->
     <div id="view-portal" class="hidden">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:10px;">
         <div>
@@ -107,7 +105,7 @@
         <h3>📊 Your Progress & Grades</h3>
         <div class="dashboard-grid">
           <div class="stat-card">
-            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Completed Badges</div>
+            <div style="font-size: 14px; color: #64748b; font-weight: 600;">Mastered Badges (Level 3/4)</div>
             <div class="stat-number" id="stat-completed">0</div>
           </div>
           <div class="stat-card">
@@ -122,7 +120,7 @@
               <tr>
                 <th>Date</th>
                 <th>Story Assignment</th>
-                <th>Status</th>
+                <th>Ontario Achievement Standard</th>
                 <th>Teacher / AI Feedback Summary</th>
               </tr>
             </thead>
@@ -144,7 +142,6 @@
     let activeTask = null;
     let computedQuestions = [];
 
-    // Run automatically when page displays to check for an active cached session
     window.addEventListener("DOMContentLoaded", () => {
       const cachedUser = localStorage.getItem("studyZoneUser");
       if (cachedUser) {
@@ -186,7 +183,6 @@
       .then(res => res.json()).then(res => {
         if(res.success) {
           activeUser = res;
-          // Store session data securely so page refresh doesn't break app memory
           localStorage.setItem("studyZoneUser", JSON.stringify(res));
           initializePortalView();
         } else {
@@ -269,10 +265,14 @@
         if(data.history && data.history.length > 0) {
           tbody.innerHTML = "";
           data.history.forEach(item => {
+            let colorCode = "#f39c12"; // Developing
+            if(item.score.includes('Excellent')) colorCode = "#2ecc71";
+            if(item.score.includes('Good')) colorCode = "#3498db";
+
             tbody.innerHTML += `<tr>
               <td><strong>${item.date}</strong></td>
               <td>${item.title}</td>
-              <td><span style="color:${item.score.includes('✅')?'#2ecc71':'#f39c12'}; font-weight:bold;">${item.score}</span></td>
+              <td><span style="color:${colorCode}; font-weight:bold;">${item.score}</span></td>
               <td><i style="color:#475569;">"${item.feedback}"</i></td>
             </tr>`;
           });
@@ -306,11 +306,10 @@
         let retryBtn = document.getElementById('retry-btn');
         
         document.getElementById('questions-wrapper-box').classList.add('hidden');
-        let numericScore = parseInt(result.percentage);
         
-        if (numericScore >= 70) {
+        if (result.status === "Excellent" || result.status === "Good") {
           fbBox.style.backgroundColor = "#e8f8f5"; fbBox.style.borderColor = "#a3e4d7";
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#117a65;"><strong>🎉 Success! Score: ${result.percentage}</strong></p>${result.feedback}`;
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#117a65;"><strong>🎉 Performance standard: ${result.status} (${result.percentage})</strong></p>${result.feedback}`;
           retryBtn.classList.add('hidden');
           setTimeout(() => {
             btn.disabled = false; btn.innerText = "Submit Assessment Answers";
@@ -318,7 +317,7 @@
           }, 4000);
         } else {
           fbBox.style.backgroundColor = "#fef9e7"; fbBox.style.borderColor = "#f9e79f";
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Keep Practicing! Score: ${result.percentage}</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Review the passage details above and try again to improve your score badge.</p>`;
+          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#b7950b;"><strong>📝 Performance standard: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px; color:#7d6608;">Review the passage details above and try again to improve your evaluation tier.</p>`;
           retryBtn.classList.remove('hidden');
           btn.disabled = false; btn.innerText = "Submit Assessment Answers";
           fetchStudentProgressReport();
