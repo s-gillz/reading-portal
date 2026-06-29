@@ -343,6 +343,38 @@
       textSynthesisEngine.speak(activeUtteranceInstance);
     }
 
+    // UNIQUE INPUT LITERACY AUDIO FEEDBACK FUNCTION
+    function speakSingleTextFragment(textFragment) {
+      if (!('speechSynthesis' in window)) return;
+      textSynthesisEngine.cancel();
+      if (!textFragment || textFragment.trim() === "") return;
+      
+      let characterUtterance = new SpeechSynthesisUtterance(textFragment);
+      characterUtterance.rate = 0.9;
+      characterUtterance.lang = 'en-CA';
+      textSynthesisEngine.speak(characterUtterance);
+    }
+
+    // KEYBOARD INPUT EVENT ROUTER FOR AUDIO FEEDBACK
+    document.addEventListener("keyup", function(event) {
+      if (!event.target.classList.contains("speech-feedback-field")) return;
+      
+      const fullValueString = event.target.value;
+      
+      if (event.key === " " || event.keyCode === 32) {
+        const structuralWords = fullValueString.trim().split(/\s+/);
+        const ultimateWord = structuralWords[structuralWords.length - 1];
+        if (ultimateWord) {
+          speakSingleTextFragment(ultimateWord);
+        }
+      } else {
+        const ultimateChar = fullValueString.slice(-1);
+        if (ultimateChar && ultimateChar.match(/[a-zA-Z0-9]/)) {
+          speakSingleTextFragment(ultimateChar);
+        }
+      }
+    });
+
     function captureSelectedTextEvidence() {
       let textSelection = window.getSelection().toString().trim();
       if(textSelection.length > 5 && textSelection.length < 150) {
@@ -501,13 +533,22 @@
             let optClean = opt.trim();
             block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${optClean}"> ${optClean}</label>`;
           });
+        } else if(qClean.includes("[TF]")) {
+          // FEATURE: INTERACTIVE RADIO LAYOUT FOR TRUE/FALSE CONFIGURATIONS
+          let parsedTitle = qClean.split("(")[0].replace("[TF]", "").trim();
+          block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
+          
+          let tfOptions = ["True", "False"];
+          tfOptions.forEach(opt => {
+            block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${opt}"> ${opt}</label>`;
+          });
         } else {
           let parsedTitle = qClean.replace("[OPEN]", "").trim();
           // FEATURE 2b: Inject Dictation activation anchor points alongside text structures
           block.innerHTML = `
             <p style="font-weight:600; margin:0 0 10px 0; padding-right: 120px;">Question ${idx+1}: ${parsedTitle}</p>
             <button id="mic-btn-ans-${idx}" class="mic-btn" onclick="activateVoiceDictation('ans-${idx}')">Speak Answer 🎙️</button>
-            <textarea id="ans-${idx}" rows="2" placeholder="Type or use your microphone to dictate response details..."></textarea>
+            <textarea id="ans-${idx}" class="speech-feedback-field" rows="2" placeholder="Type or use your microphone to dictate response details..."></textarea>
           `;
         }
         container.appendChild(block);
@@ -575,73 +616,93 @@
               visualFeedbackHtml = alignmentLines.map(line => {
                 let trimmedLine = line.trim();
                 if (!trimmedLine) return '';
-                return `<div style="margin-bottom: 5px; padding-left: 8px; border-left: 2px solid var(--border-color); font-size: 13px; font-style: normal; line-height: 1.4;">${trimmedLine}</div>`;
+                return `<div style="margin-bottom: 5px; padding-left: 8px; border-left: 2px solid var(--border-color); font-size: 13px; font-style: normal;">${trimmedLine}</div>`;
               }).join('');
-            } else {
-              visualFeedbackHtml = `<span style="color:#94a3b8; font-style:italic;">No feedback criteria tracked.</span>`;
             }
 
-            tbody.innerHTML += `<tr>
-              <td><strong>${item.date}</strong></td>
-              <td>${item.title}</td>
-              <td><span style="color:${colorCode}; font-weight:bold;">${item.score}</span></td>
-              <td>${visualFeedbackHtml}</td>
-            </tr>`;
+            tbody.innerHTML += `
+              <tr>
+                <td>${item.date}</td>
+                <td><strong>${item.title}</strong></td>
+                <td><span style="color:${colorCode}; font-weight:bold;">${item.score}</span></td>
+                <td>${visualFeedbackHtml || 'No structured breakdown available.'}</td>
+              </tr>
+            `;
           });
         }
       });
     }
 
     function processAssignmentSubmission() {
-      if(textSynthesisEngine.speaking) textSynthesisEngine.cancel();
-      
-      let answers = [];
-      let btn = document.getElementById('submit-btn');
-      
-      for(let i=0; i<computedQuestions.length; i++) {
-        let qStr = computedQuestions[i].trim();
-        if(qStr.includes("[MCQ]")) {
-          let selected = document.querySelector(`input[name="q-${i}"]:checked`);
-          if(!selected) return alert(`Please answer Question ${i+1}`);
-          answers.push(selected.value);
-        } else {
-          let textAns = document.getElementById(`ans-${i}`).value.trim();
-          if(!textAns) return alert(`Please answer Question ${i+1}`);
-          answers.push(textAns);
-        }
-      }
+      let collectedAnswers = [];
+      let missingInputDetected = false;
 
-      btn.disabled = true; btn.innerText = "Evaluating response criteria...";
-      
-      fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "submit", email: activeUser.email, taskId: activeTask.id, studentAnswers: answers }) })
-      .then(res => res.json()).then(result => {
-        let fbBox = document.getElementById('ui-feedback');
-        let fbText = document.getElementById('feedback-text-content');
-        let retryBtn = document.getElementById('retry-btn');
-        
-        document.getElementById('questions-wrapper-box').classList.add('hidden');
-        
-        if (result.status === "Excellent" || result.status === "Good") {
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#2ecc71;"><strong>🎉 Achievement Standard Mastered: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:8px; font-size:13px; color:#7f8c8d;">📬 A comprehensive progress report card has been sent directly to your parent's email address.</p>`;
-          retryBtn.classList.add('hidden');
-          setTimeout(() => {
-            btn.disabled = false; btn.innerText = "Submit Assessment Answers";
-            fetchCurriculumPayload(); fetchStudentProgressReport();
-          }, 5000);
+      computedQuestions.forEach((qStr, idx) => {
+        let qClean = qStr.trim();
+        if(qClean.includes("[MCQ]") || qClean.includes("[TF]")) {
+          let activeCheckedRadio = document.querySelector(`input[name="q-${idx}"]:checked`);
+          if(activeCheckedRadio) {
+            collectedAnswers.push(activeCheckedRadio.value);
+          } else {
+            missingInputDetected = true;
+          }
         } else {
-          fbText.innerHTML = `<p style="font-size:16px; margin:0 0 5px 0; color:#e67e22;"><strong>📝 Performance Tier: ${result.status} (${result.percentage})</strong></p>${result.feedback}<p style="margin-top:10px; font-size:14px;">Review the text details above. Use the flashcards or click "Listen to Story" to build your understanding and try again!</p>`;
-          retryBtn.classList.remove('hidden');
-          btn.disabled = false; btn.innerText = "Submit Assessment Answers";
-          fetchStudentProgressReport();
+          let writtenContentStr = document.getElementById(`ans-${idx}`).value.trim();
+          if(writtenContentStr) {
+            collectedAnswers.push(writtenContentStr);
+          } else {
+            missingInputDetected = true;
+          }
         }
-        fbBox.classList.remove('hidden');
+      });
+
+      if(missingInputDetected) return alert("Please answer all assessment items before submitting.");
+
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('submit-btn').innerText = "Processing Evaluation...";
+
+      fetch(GOOGLE_SCRIPT_API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "submit",
+          email: activeUser.email,
+          taskId: activeTask.id,
+          studentAnswers: collectedAnswers
+        })
+      })
+      .then(res => res.json()).then(res => {
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').innerText = "Submit Assessment Answers";
+
+        if(res.success) {
+          document.getElementById('questions-wrapper-box').classList.add('hidden');
+          let textFeedbackArea = document.getElementById('feedback-text-content');
+          
+          let structuredLines = res.feedback.split('|');
+          let cleanFeedbackHtml = structuredLines.map(line => {
+            let trLine = line.trim();
+            if(!trLine) return '';
+            return `<p style="margin: 6px 0;">• ${trLine}</p>`;
+          }).join('');
+
+          textFeedbackArea.innerHTML = `
+            <h4 style="margin:0 0 10px 0; color:var(--success);">Submission Evaluated Successfully!</h4>
+            <p><strong>Ontario Standard Level:</strong> ${res.status}</p>
+            <div>${cleanFeedbackHtml}</div>
+          `;
+          
+          document.getElementById('ui-feedback').classList.remove('hidden');
+          fetchStudentProgressReport();
+        } else {
+          alert("Error: " + res.message);
+        }
       });
     }
 
     function resetFormForRetry() {
-      document.getElementById('ui-feedback').classList.add('hidden');
-      document.getElementById('questions-wrapper-box').classList.remove('hidden');
       buildQuestionsUI();
+      document.getElementById('questions-wrapper-box').classList.remove('hidden');
+      document.getElementById('ui-feedback').classList.add('hidden');
     }
   </script>
 </body>
