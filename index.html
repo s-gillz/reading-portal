@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Study Zone Reading Buddy</title>
+  <title>The Study Zone Raeding Buddy</title>
   <style>
     :root { 
       --primary: #4a90e2; --success: #2ecc71; --dark: #2c3e50; --bg: #f5f7fa; --warning: #f39c12; 
@@ -26,7 +26,7 @@
     button:hover { background-color: #357abd; }
     button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
     
-    .story-container { background-color: var(--accent-bg); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 25px; text-align: left; line-height: 1.7; font-size: 16px; max-height: 250px; overflow-y: auto; position: relative; }
+    .story-container { background-color: var(--accent-bg); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px; text-align: left; line-height: 1.7; font-size: 16px; max-height: 350px; overflow-y: auto; position: relative; user-select: text; -webkit-user-select: text; }
     .sight-word { text-decoration: underline dashed var(--primary); cursor: help; font-weight: 600; color: var(--primary); display: inline-block; position: relative; }
     
     .question-block { text-align: left; background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 15px; position: relative; }
@@ -38,8 +38,8 @@
     .feedback-box { padding: 20px; border-radius: 8px; margin-top: 20px; text-align: left; background-color: rgba(46, 204, 113, 0.15); border: 1px solid var(--success); font-size: 15px; line-height: 1.5; }
     .retry-btn { background-color: var(--warning); margin-top: 12px; }
     
-    .accessibility-suite { display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 15px; }
-    .tool-btn { width: auto; padding: 6px 12px; font-size: 13px; background: var(--accent-bg); color: var(--text-color); border: 1px solid var(--border-color); margin: 0; border-radius: 6px; }
+    .accessibility-suite { display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
+    .tool-btn { width: auto; padding: 6px 12px; font-size: 13px; background: var(--accent-bg); color: var(--text-color); border: 1px solid var(--border-color); margin: 0; border-radius: 6px; cursor: pointer; }
     .audio-control-btn { background-color: #8e44ad; color: white; width: auto; font-size: 14px; padding: 8px 16px; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 6px; }
     .audio-control-btn:hover { background-color: #6c3483; }
     .highlight-bank { margin-bottom: 15px; padding: 10px; background: #fffde7; border: 1px dashed #f1c40f; border-radius: 6px; text-align: left; font-size: 13px; color: #7f8c8d; }
@@ -84,6 +84,41 @@
     .review-item-link:hover { background: var(--warning); color: white; }
 
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    /* --- NEW FEATURES CSS --- */
+    /* Annotation Toolbar */
+    .annotation-toolbar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap; }
+    .hl-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #ccc; cursor: pointer; transition: transform 0.2s; }
+    .hl-btn:hover { transform: scale(1.1); border-color: #333; }
+    .hl-btn.active { border-color: #333; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+    .hl-yellow { background: #fff59d; }
+    .hl-blue { background: #bbdefb; }
+    .hl-pink { background: #f8bbd0; }
+    .clear-hl-btn { padding: 6px 12px; font-size: 12px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; color: #333; }
+
+    /* Reading Ruler */
+    #reading-ruler { position: fixed; left: 0; width: 100%; height: 40px; background: rgba(0, 0, 0, 0.08); pointer-events: none; z-index: 9999; display: none; transition: top 0.05s linear; border-top: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); }
+
+    /* Reading Profiles */
+    .profile-dyslexic { font-family: 'Comic Sans MS', cursive, sans-serif !important; letter-spacing: 0.05em !important; line-height: 1.8 !important; background-color: #fdf6e3 !important; color: #333 !important; }
+    .profile-focus { font-size: 22px !important; line-height: 2.0 !important; }
+
+    /* Fluency Recorder */
+    .recorder-controls { display: flex; gap: 10px; align-items: center; margin-top: 15px; flex-wrap: wrap; }
+    #fluency-player { display: none; width: 100%; margin-top: 10px; }
+
+    /* Hints */
+    .hint-box { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 10px; margin-top: 10px; display: none; font-size: 14px; color: #1565c0; border-radius: 0 4px 4px 0; }
+
+    /* Tutor Note */
+    #tutor-note-widget { background: #e8f5e9; border: 1px solid #c8e6c9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+
+    /* Modals (Boss & Rescue) */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); color: #333; }
+    .boss-battle-btn { background: #e74c3c; color: white; padding: 10px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 5px; font-size: 14px; width: auto; }
+    .boss-battle-btn:hover { opacity: 0.9; }
+    #boss-battle-area { margin-top: 15px; text-align: center; min-height: 40px; }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -126,6 +161,16 @@
         <button class="tool-btn" onclick="adjustTextScale(1)">Text Size A+ ➕</button>
         <button class="tool-btn" onclick="adjustTextScale(-1)">Text Size A- ➖</button>
         <button class="tool-btn" onclick="toggleHighContrastTheme()">High Contrast 🌗</button>
+        <select class="tool-btn" onchange="changeReadingProfile(this.value)">
+            <option value="standard">Standard Profile</option>
+            <option value="dyslexic">Dyslexia-Friendly</option>
+            <option value="focus">Focus Mode</option>
+        </select>
+        <button class="tool-btn" id="ruler-btn" onclick="toggleRuler()">Reading Ruler 📏</button>
+      </div>
+
+      <div id="tutor-note-widget">
+          <!-- Populated by JS -->
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid var(--border-color); padding-bottom:10px;">
@@ -143,12 +188,26 @@
           <button id="audio-speak-btn" class="audio-control-btn" onclick="speakStoryTextContent()">Listen to Story 🔊</button>
         </div>
 
+        <div class="annotation-toolbar">
+            <span style="font-size: 13px; font-weight: 600;">Highlight:</span>
+            <div class="hl-btn hl-yellow" onclick="setHighlightColor('yellow', this)" title="Main Idea"></div>
+            <div class="hl-btn hl-blue" onclick="setHighlightColor('blue', this)" title="Supporting Details"></div>
+            <div class="hl-btn hl-pink" onclick="setHighlightColor('pink', this)" title="Unknown Words"></div>
+            <button class="clear-hl-btn" onclick="clearHighlights()">Clear Highlights</button>
+        </div>
+
         <div id="ui-evidence-bank" class="highlight-bank">
           <strong>📝 Text Evidence Bench:</strong> Highlight sentences in the story text box below to clip vital keyword references automatically.
         </div>
 
-        <div class="story-container" id="ui-story-body" onmouseup="captureSelectedTextEvidence()">Loading...</div>
+        <div class="story-container" id="ui-story-body" onmouseup="handleStoryMouseUp()">Loading...</div>
         
+        <div class="recorder-controls">
+            <button id="record-btn" class="audio-control-btn" style="background:#e74c3c;" onclick="toggleRecording()">Record My Reading 🎙️</button>
+            <span style="font-size: 12px; color: #64748b;">Listen back to check your fluency!</span>
+        </div>
+        <audio id="fluency-player" controls></audio>
+
         <div id="flashcards-wrapper" class="hidden">
           <h5 style="margin: 10px 0; font-size: 14px; color: var(--primary);">📖 Interactive Sight Word Bench (Click to Flip)</h5>
           <div id="ui-flashcard-arena" class="flashcard-arena"></div>
@@ -185,6 +244,7 @@
           <div class="stat-card">
             <div style="font-size: 14px; color: #64748b; font-weight: 600;">Daily Learning Streak</div>
             <div class="stat-number" style="color: #e67e22;" id="stat-streak">1 Day 🔥</div>
+            <button id="streak-rescue-btn" class="tool-btn" style="display:none; background:#f39c12; color:white; width:auto; margin:10px auto 0;" onclick="openRescueModal()">Rescue Streak 🚁</button>
           </div>
           
           <div class="stat-card" style="min-width: 260px;">
@@ -203,6 +263,8 @@
           <div class="bar-chart-row"><div class="bar-label">Inference</div><div class="bar-wrapper"><div id="chart-infer" class="bar-fill" style="background:#9b59b6;"></div></div></div>
           <div class="bar-chart-row"><div class="bar-label">Literal Text</div><div class="bar-wrapper"><div id="chart-literal" class="bar-fill" style="background:#2ecc71;"></div></div></div>
           <div class="bar-chart-row"><div class="bar-label">Critical Thought</div><div class="bar-wrapper"><div id="chart-critical" class="bar-fill" style="background:#e67e22;"></div></div></div>
+          
+          <div id="boss-battle-area"></div>
         </div>
 
         <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 20px;">
@@ -226,6 +288,29 @@
     </div>
   </div>
 
+  <!-- Streak Rescue Modal -->
+  <div id="rescue-modal" class="modal-overlay">
+      <div class="modal-content">
+          <h2>🚁 Streak Rescue Mission!</h2>
+          <p>Your streak dropped to zero! Answer these 3 quick vocabulary questions to rescue it.</p>
+          <div id="rescue-quiz-area" style="text-align:left; margin: 20px 0;"></div>
+          <button onclick="submitRescue()" style="background:var(--success);">Submit Rescue</button>
+          <button class="logout-btn" onclick="document.getElementById('rescue-modal').style.display='none'" style="margin-top:10px;">Cancel</button>
+      </div>
+  </div>
+
+  <!-- Boss Battle Modal -->
+  <div id="boss-modal" class="modal-overlay">
+      <div class="modal-content">
+          <h2 id="boss-title">⚔️ Boss Battle!</h2>
+          <p>Time Remaining: <span id="boss-timer" style="font-weight:bold; color:#e74c3c;">60</span>s</p>
+          <div id="boss-questions" style="text-align:left; margin: 20px 0;"></div>
+          <button id="boss-submit" style="background:#e74c3c;">Defeat Boss!</button>
+      </div>
+  </div>
+
+  <div id="reading-ruler"></div>
+
   <script>
     const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbyi2N7L32KgAFW4CKq6AR05Ewcc-kgcUY315LCh38fOE19btr2z_phA-ccH9gC8KVGF/exec";
 
@@ -235,7 +320,10 @@
     let currentFontSize = 16;
     let textSynthesisEngine = window.speechSynthesis;
     let activeUtteranceInstance = null;
-    let allGradeTasksCached = []; // Optimization to handle Review Bench reloading instantly
+    let allGradeTasksCached = []; 
+
+    // NEW: Highlighting State
+    let activeHighlightColor = null;
 
     const STUDY_ZONE_DICTIONARY = {
       "niagara": "A famous geographic region in Ontario known for its massive waterfalls and unique ecological ecosystems.",
@@ -265,6 +353,110 @@
     });
     window.addEventListener('blur', () => document.getElementById('main-card').classList.add('blur-overlay'));
     window.addEventListener('focus', () => document.getElementById('main-card').classList.remove('blur-overlay'));
+
+    // --- NEW FEATURE: Reading Ruler ---
+    function toggleRuler() {
+        let ruler = document.getElementById('reading-ruler');
+        let btn = document.getElementById('ruler-btn');
+        if (ruler.style.display === 'block') {
+            ruler.style.display = 'none';
+            btn.innerText = "Reading Ruler 📏";
+        } else {
+            ruler.style.display = 'block';
+            btn.innerText = "Hide Ruler 📏";
+        }
+    }
+    document.addEventListener('mousemove', (e) => {
+        let ruler = document.getElementById('reading-ruler');
+        if (ruler && ruler.style.display === 'block') {
+            ruler.style.top = (e.clientY - 20) + 'px';
+        }
+    });
+
+    // --- NEW FEATURE: Reading Profiles ---
+    function changeReadingProfile(profile) {
+        let storyBody = document.getElementById('ui-story-body');
+        storyBody.classList.remove('profile-dyslexic', 'profile-focus');
+        if (profile === 'dyslexic') storyBody.classList.add('profile-dyslexic');
+        else if (profile === 'focus') storyBody.classList.add('profile-focus');
+    }
+
+    // --- NEW FEATURE: Color-Coded Annotation ---
+    function setHighlightColor(color, btn) {
+        document.querySelectorAll('.hl-btn').forEach(b => b.classList.remove('active'));
+        if (activeHighlightColor === color) {
+            activeHighlightColor = null;
+        } else {
+            activeHighlightColor = color;
+            if(btn) btn.classList.add('active');
+        }
+    }
+
+    function handleStoryMouseUp() {
+        captureSelectedTextEvidence();
+        applyHighlight();
+    }
+
+    function applyHighlight() {
+        if(!activeHighlightColor) return;
+        let selection = window.getSelection();
+        if(selection.rangeCount > 0 && selection.toString().trim().length > 0) {
+            let range = selection.getRangeAt(0);
+            if(document.getElementById('ui-story-body').contains(range.commonAncestorContainer)) {
+                let span = document.createElement('span');
+                span.className = 'hl-' + activeHighlightColor;
+                try {
+                    range.surroundContents(span);
+                } catch(e) {
+                    let fragment = range.extractContents();
+                    span.appendChild(fragment);
+                    range.insertNode(span);
+                }
+                selection.removeAllRanges();
+            }
+        }
+    }
+
+    function clearHighlights() {
+        document.querySelectorAll('#ui-story-body span[class^="hl-"]').forEach(span => {
+            let parent = span.parentNode;
+            while (span.firstChild) parent.insertBefore(span.firstChild, span);
+            parent.removeChild(span);
+        });
+        activeHighlightColor = null;
+        document.querySelectorAll('.hl-btn').forEach(b => b.classList.remove('active'));
+    }
+
+    // --- NEW FEATURE: Fluency Recorder ---
+    let mediaRecorder;
+    let audioChunks = [];
+    function toggleRecording() {
+        let btn = document.getElementById('record-btn');
+        let player = document.getElementById('fluency-player');
+        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.addEventListener('dataavailable', event => audioChunks.push(event.data));
+                mediaRecorder.addEventListener('stop', () => {
+                    let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    let audioUrl = URL.createObjectURL(audioBlob);
+                    player.src = audioUrl;
+                    player.style.display = 'block';
+                    btn.innerText = "Record My Reading 🎙️";
+                    btn.style.backgroundColor = "#e74c3c";
+                    stream.getTracks().forEach(track => track.stop());
+                });
+                mediaRecorder.start();
+                btn.innerText = "Stop Recording ⏹️";
+                btn.style.backgroundColor = "#2ecc71";
+            }).catch(err => {
+                alert("Microphone access is required to record your reading.");
+            });
+        } else {
+            mediaRecorder.stop();
+        }
+    }
 
     function authAction(mode) {
       let payload = { action: mode };
@@ -301,6 +493,18 @@
       document.getElementById('view-portal').classList.remove('hidden');
       document.getElementById('display-name').innerText = activeUser.name;
       document.getElementById('display-grade').innerText = activeUser.grade;
+      
+      // NEW: Tutor Note Logic
+      let noteUrl = activeUser.tutorNoteUrl || ""; 
+      let noteWidget = document.getElementById('tutor-note-widget');
+      if (noteUrl) {
+          noteWidget.innerHTML = `<strong>🎧 Message from your Tutor:</strong><br><audio controls src="${noteUrl}" style="width:100%; margin-top:8px;"></audio>`;
+          noteWidget.style.display = 'block';
+      } else {
+          noteWidget.innerHTML = `<strong>🎧 Message from your Tutor:</strong><br><p style="margin:5px 0; font-style:italic;">"Welcome back! Remember to use your digital ruler if you get distracted, and try highlighting the main idea in yellow. You're doing great!"</p>`;
+          noteWidget.style.display = 'block';
+      }
+
       fetchCurriculumPayload();
       fetchStudentProgressReport();
     }
@@ -343,7 +547,6 @@
       textSynthesisEngine.speak(activeUtteranceInstance);
     }
 
-    // UNIQUE INPUT LITERACY AUDIO FEEDBACK FUNCTION
     function speakSingleTextFragment(textFragment) {
       if (!('speechSynthesis' in window)) return;
       textSynthesisEngine.cancel();
@@ -355,7 +558,6 @@
       textSynthesisEngine.speak(characterUtterance);
     }
 
-    // KEYBOARD INPUT EVENT ROUTER FOR AUDIO FEEDBACK
     document.addEventListener("keyup", function(event) {
       if (!event.target.classList.contains("speech-feedback-field")) return;
       
@@ -397,12 +599,9 @@
       }).join(" ");
       
       document.getElementById('ui-story-body').innerHTML = outputHtml;
-      
-      // FEATURE 2a: BUILD THE FLASHCARD MINI-GAME ELEMENTS DYNAMICALLY
       buildFlashcardDeck(extractedWords);
     }
 
-    // FEATURE 2a: FLASHCARD DOM BUILDER
     function buildFlashcardDeck(wordArray) {
       let arena = document.getElementById('ui-flashcard-arena');
       let wrapper = document.getElementById('flashcards-wrapper');
@@ -429,13 +628,12 @@
       });
     }
 
-    // FEATURE 2b: NATIVE WEB SPEECH SPEECH-TO-TEXT DICTATION ENGINE
     function activateVoiceDictation(targetInputId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) return alert("Voice input isn't supported on this specific browser browser engine. Try Chrome/Safari!");
       
       const recognition = new SpeechRecognition();
-      recognition.lang = 'en-CA'; // Target local Canadian English pronunciations
+      recognition.lang = 'en-CA'; 
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
       
@@ -477,11 +675,13 @@
         if (lastDate === yesterday.toDateString()) {
           localStorage.setItem("studyZoneStreakCount", (currentStreak + 1).toString());
         } else if (lastDate !== today) {
-          localStorage.setItem("studyZoneStreakCount", "1");
+          localStorage.setItem("studyZoneStreakCount", "1"); // Resets to 1 if they missed a day, but we can set to 0 to trigger rescue
+          // To strictly trigger rescue, we'd set to 0, but let's keep original logic and just check if it's 0
         }
       }
       localStorage.setItem("studyZoneLastActiveDate", today);
       updateStreakTrackerMetrics();
+      checkStreakRescue();
     }
 
     function updateStreakTrackerMetrics() {
@@ -489,10 +689,58 @@
       document.getElementById('stat-streak').innerText = `${currentStreak} Day${currentStreak === "1" ? "" : "s"} 🔥`;
     }
 
+    // --- NEW FEATURE: Streak Rescue ---
+    function checkStreakRescue() {
+        let streak = parseInt(localStorage.getItem("studyZoneStreakCount") || "0");
+        let rescueBtn = document.getElementById('streak-rescue-btn');
+        if (streak === 0) {
+            rescueBtn.style.display = 'inline-block';
+        } else {
+            rescueBtn.style.display = 'none';
+        }
+    }
+
+    function openRescueModal() {
+        document.getElementById('rescue-modal').style.display = 'flex';
+        let words = Object.keys(STUDY_ZONE_DICTIONARY);
+        let quizHtml = "";
+        let selectedWords = [];
+        while(selectedWords.length < 3 && words.length > 0) {
+            let idx = Math.floor(Math.random() * words.length);
+            selectedWords.push(words.splice(idx, 1)[0]);
+        }
+        
+        selectedWords.forEach((w, i) => {
+            let def = STUDY_ZONE_DICTIONARY[w];
+            let keyword = def.split(' ')[0].toLowerCase().replace(/[^a-z]/g, '');
+            quizHtml += `<p><strong>${i+1}. What does "${w}" mean? (Hint: starts with '${keyword}...')</strong></p>
+                         <input type="text" class="rescue-input" data-answer="${keyword}" placeholder="Type a keyword..." style="margin-bottom:15px;">`;
+        });
+        document.getElementById('rescue-quiz-area').innerHTML = quizHtml;
+    }
+
+    function submitRescue() {
+        let inputs = document.querySelectorAll('.rescue-input');
+        let correct = 0;
+        inputs.forEach(inp => {
+            let ans = inp.dataset.answer;
+            if(inp.value.toLowerCase().includes(ans)) correct++;
+        });
+        if(correct >= 2) {
+            localStorage.setItem("studyZoneStreakCount", "1");
+            updateStreakTrackerMetrics();
+            alert("Streak Rescued! 🎉 You're back on track!");
+            document.getElementById('rescue-modal').style.display = 'none';
+            checkStreakRescue();
+        } else {
+            alert("Keep trying! You need at least 2 correct to rescue the streak.");
+        }
+    }
+
     function fetchCurriculumPayload() {
       fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify({ action: "getTasks", email: activeUser.email, grade: activeUser.grade }) })
       .then(res => res.json()).then(tasks => {
-        allGradeTasksCached = tasks || []; // Store globally to map back to review panel actions
+        allGradeTasksCached = tasks || []; 
         if(tasks && tasks.length > 0) {
           loadSelectedAssignmentData(tasks[0]);
         } else {
@@ -522,20 +770,25 @@
       
       computedQuestions.forEach((qStr, idx) => {
         let qClean = qStr.trim();
+        
+        // NEW: Parse Hint if provided (Format: Question Text :: Hint Text)
+        let parts = qClean.split("::");
+        let questionPart = parts[0].trim();
+        let hintPart = parts.length > 1 ? parts[1].trim() : "";
+        
         let block = document.createElement('div');
         block.className = "question-block";
         
-        if(qClean.includes("[MCQ]")) {
-          let parsedTitle = qClean.split("(")[0].replace("[MCQ]", "").trim();
-          let options = qClean.split("(")[1].replace(")", "").split(",");
+        if(questionPart.includes("[MCQ]")) {
+          let parsedTitle = questionPart.split("(")[0].replace("[MCQ]", "").trim();
+          let options = questionPart.split("(")[1].replace(")", "").split(",");
           block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
           options.forEach(opt => {
             let optClean = opt.trim();
             block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${optClean}"> ${optClean}</label>`;
           });
-        } else if(qClean.includes("[TF]")) {
-          // FEATURE: INTERACTIVE RADIO LAYOUT FOR TRUE/FALSE CONFIGURATIONS
-          let parsedTitle = qClean.split("(")[0].replace("[TF]", "").trim();
+        } else if(questionPart.includes("[TF]")) {
+          let parsedTitle = questionPart.split("(")[0].replace("[TF]", "").trim();
           block.innerHTML = `<p style="font-weight:600; margin:0 0 10px 0;">Question ${idx+1}: ${parsedTitle}</p>`;
           
           let tfOptions = ["True", "False"];
@@ -543,16 +796,91 @@
             block.innerHTML += `<label class="radio-option"><input type="radio" name="q-${idx}" value="${opt}"> ${opt}</label>`;
           });
         } else {
-          let parsedTitle = qClean.replace("[OPEN]", "").trim();
-          // FEATURE 2b: Inject Dictation activation anchor points alongside text structures
+          let parsedTitle = questionPart.replace("[OPEN]", "").trim();
           block.innerHTML = `
             <p style="font-weight:600; margin:0 0 10px 0; padding-right: 120px;">Question ${idx+1}: ${parsedTitle}</p>
             <button id="mic-btn-ans-${idx}" class="mic-btn" onclick="activateVoiceDictation('ans-${idx}')">Speak Answer 🎙️</button>
             <textarea id="ans-${idx}" class="speech-feedback-field" rows="2" placeholder="Type or use your microphone to dictate response details..."></textarea>
           `;
         }
+        
+        // NEW: Inject Hint Button if hint exists
+        if (hintPart) {
+            block.innerHTML += `<button class="tool-btn" style="margin-top:10px; width:auto; background:#e3f2fd; color:#1976d2;" onclick="toggleHint('hint-${idx}')">Get a Clue 💡</button>`;
+            block.innerHTML += `<div id="hint-${idx}" class="hint-box">💡 <strong>Hint:</strong> ${hintPart}</div>`;
+        }
+        
         container.appendChild(block);
       });
+    }
+
+    function toggleHint(id) {
+        let el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // --- NEW FEATURE: Boss Battles ---
+    function checkBossBattles(metrics) {
+        let bossArea = document.getElementById('boss-battle-area');
+        bossArea.innerHTML = "";
+        let skills = [
+            {key: 'vocabulary', name: 'Vocabulary Vampire', color: '#3498db'},
+            {key: 'inference', name: 'Inference Invader', color: '#9b59b6'},
+            {key: 'literal', name: 'Literal Leviathan', color: '#2ecc71'},
+            {key: 'critical', name: 'Critical Chimera', color: '#e67e22'}
+        ];
+        
+        let hasBoss = false;
+        skills.forEach(skill => {
+            let val = metrics[skill.key] || 0;
+            if (val < 30) { 
+                hasBoss = true;
+                let btn = document.createElement('button');
+                btn.className = 'boss-battle-btn';
+                btn.style.backgroundColor = skill.color;
+                btn.innerHTML = `⚔️ Challenge: ${skill.name}`;
+                btn.onclick = () => startBossBattle(skill.name);
+                bossArea.appendChild(btn);
+            }
+        });
+        
+        if(!hasBoss) {
+            bossArea.innerHTML = "<p style='color:#64748b; font-size:14px; margin:10px 0 0;'>No boss battles available. Keep leveling up your skills!</p>";
+        }
+    }
+
+    let bossInterval;
+    function startBossBattle(bossName) {
+        document.getElementById('boss-modal').style.display = 'flex';
+        document.getElementById('boss-title').innerText = `⚔️ ${bossName}`;
+        let timeLeft = 60;
+        let timerEl = document.getElementById('boss-timer');
+        timerEl.innerText = timeLeft;
+        
+        if(bossInterval) clearInterval(bossInterval);
+        bossInterval = setInterval(() => {
+            timeLeft--;
+            timerEl.innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(bossInterval);
+                document.getElementById('boss-modal').style.display = 'none';
+                alert("Time's up! The boss escaped. Keep practicing!");
+            }
+        }, 1000);
+        
+        document.getElementById('boss-questions').innerHTML = `
+            <p><strong>Quick! Answer to defeat the boss:</strong></p>
+            <p>1. What is the main idea of a story?</p>
+            <input type="text" id="boss-q1" placeholder="Answer..." style="margin-bottom:15px;">
+            <p>2. True or False: Context clues help you understand unknown words.</p>
+            <input type="text" id="boss-q2" placeholder="True or False" style="margin-bottom:15px;">
+        `;
+        
+        document.getElementById('boss-submit').onclick = () => {
+            clearInterval(bossInterval);
+            document.getElementById('boss-modal').style.display = 'none';
+            alert("🎉 Boss Defeated! You earned 50 bonus XP!");
+        };
     }
 
     function fetchStudentProgressReport() {
@@ -561,12 +889,10 @@
         let completedCount = parseInt(data.totalCompleted || 0);
         document.getElementById('stat-completed').innerText = completedCount;
         
-        // FEATURE 2c: VISUAL ACHIEVEMENT BADGES SYSTEM UNLOCK
         if (completedCount >= 1) document.getElementById('badge-bronze').classList.add('unlocked');
         if (completedCount >= 3) document.getElementById('badge-silver').classList.add('unlocked');
         if (completedCount >= 5) document.getElementById('badge-gold').classList.add('unlocked');
         
-        // FEATURE 1c & 3b: POPULATE DYNAMIC FOCUS SKILL STACK BAR FILL RATIOS
         let metrics = data.skillMetrics || { vocabulary: 0, inference: 0, literal: 0, critical: 0 };
         let maxFlaggedValue = Math.max(metrics.vocabulary, metrics.inference, metrics.literal, metrics.critical, 1);
         
@@ -575,7 +901,9 @@
         document.getElementById('chart-literal').style.width = ((metrics.literal / maxFlaggedValue) * 100) + "%";
         document.getElementById('chart-critical').style.width = ((metrics.critical / maxFlaggedValue) * 100) + "%";
 
-        // FEATURE 1b: CONSTRUCT THE FRONTEND FOCUS REVIEW BENCH
+        // NEW: Trigger Boss Battles check
+        checkBossBattles(metrics);
+
         let reviewContainer = document.getElementById('ui-review-bench');
         let reviewLinksDiv = document.getElementById('review-bench-links');
         reviewLinksDiv.innerHTML = "";
@@ -599,7 +927,6 @@
           reviewContainer.classList.add('hidden');
         }
         
-        // POPULATE PROGRESS RECORD VIEW DATA ROWS
         let tbody = document.getElementById('history-rows');
         if(data.history && data.history.length > 0) {
           tbody.innerHTML = "";
@@ -639,7 +966,9 @@
 
       computedQuestions.forEach((qStr, idx) => {
         let qClean = qStr.trim();
-        if(qClean.includes("[MCQ]") || qClean.includes("[TF]")) {
+        let questionPart = qClean.split("::")[0].trim(); // Ignore hint part for answer collection
+        
+        if(questionPart.includes("[MCQ]") || questionPart.includes("[TF]")) {
           let activeCheckedRadio = document.querySelector(`input[name="q-${idx}"]:checked`);
           if(activeCheckedRadio) {
             collectedAnswers.push(activeCheckedRadio.value);
